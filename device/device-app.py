@@ -1,9 +1,19 @@
 import speech_recognition as sr
 import os
+import openai
+# import openai.error
+import pyttsx3
 
-KEYWORD = os.getenv("ACTIVATION_WORD")
+
+# KEYWORD = os.getenv("ACTIVATION_WORD")
+KEYWORD = os.getenv("ACTIVATION_KEYWORD")
 MODEL_ADDR = os.getenv("MODEL_ADDR")
+MODEL_TYPE = os.getenv("MODEL_TYPE")
 API_KEY = os.getenv("API_KEY")
+
+MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
+engine = pyttsx3.init()
+
 
 TEST_OUTPUT_FILE = "output.txt"
 
@@ -53,16 +63,41 @@ def record_query(recognizer, microphone):
         print("Sphinx error: {0}".format(e))
     return ""
 
-def save_query(query, filename):
-    """
-    Appends the query to a file.
-    """
+def query_third_party(query):
+    client = openai(
+        api_key=API_KEY,
+        base_url=MODEL_ADDR
+    )
+    
     try:
-        with open(filename, "a") as f:
-            f.write(query + "\n")
-        print("Query saved to", filename)
+        response = client.chat.completions.create(
+            model="gemini-1.5-flash",
+            messages=[
+                {"role": "system", "content": "You are a helpful conversational assistant.\
+                    Please answer the following query politely and concisely; however, \
+                    elaborate when necessary."},
+                {"role": "user", "content": query}
+            ]
+        )
+        reply = response.choices[0].message['content']
+        return reply
+    
+    except openai.error.AuthenticationError as e:
+        return "Authentication error: Please check your API key."
+    except openai.error.RateLimitError as e:
+        return "Rate limit exceeded. Please try again later."
+    except openai.error.APIConnectionError as e:
+        return f"Failed to connect to the OpenAI API: {e}"
+    except openai.error.Timeout as e:
+        return f"Request timed out: {e}"
+    except openai.error.APIError as e:
+        return "OpenAI API returned an API error: {e}"
     except Exception as e:
-        print("Error saving query:", e)
+        return "An unexpected error occurred: {e}"
+        
+def speak_response(query_response):
+    engine.say("Hello, Raspberry Pi!")
+    engine.runAndWait()  
 
 def main():
     recognizer = sr.Recognizer()
@@ -77,8 +112,10 @@ def main():
             # When the keyword is detected, record the following query
             query = record_query(recognizer, microphone)
             if query:
-                save_query(query, TEST_OUTPUT_FILE)
-            print("Waiting for the next keyword...\n")
+                query_response = query_third_party(query)
+            else:
+                query_response = MISSED_QUERY_STR
+            speak_response(query_response)
 
 if __name__ == '__main__':
     try:
