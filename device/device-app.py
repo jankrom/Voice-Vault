@@ -1,14 +1,12 @@
 import speech_recognition as sr
 import os
-import openai
-# import openai.error
 import pyttsx3
+import requests
 
 
-# KEYWORD = os.getenv("ACTIVATION_WORD")
+
 KEYWORD = os.getenv("ACTIVATION_KEYWORD")
 MODEL_ADDR = os.getenv("MODEL_ADDR")
-MODEL_TYPE = os.getenv("MODEL_TYPE")
 API_KEY = os.getenv("API_KEY")
 
 MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
@@ -63,40 +61,56 @@ def record_query(recognizer, microphone):
         print("Sphinx error: {0}".format(e))
     return ""
 
-def query_third_party(query):
-    client = openai(
-        api_key=API_KEY,
-        base_url=MODEL_ADDR
-    )
+# def query_third_party(query):
+#     client = openai(
+#         api_key=API_KEY,
+#         base_url=MODEL_ADDR
+#     )
     
-    try:
-        response = client.chat.completions.create(
-            model="gemini-1.5-flash",
-            messages=[
-                {"role": "system", "content": "You are a helpful conversational assistant.\
-                    Please answer the following query politely and concisely; however, \
-                    elaborate when necessary."},
-                {"role": "user", "content": query}
-            ]
-        )
-        reply = response.choices[0].message['content']
-        return reply
+#     try:
+#         response = client.chat.completions.create(
+#             model="gemini-1.5-flash",
+#             messages=[
+#                 {"role": "system", "content": "You are a helpful conversational assistant.\
+#                     Please answer the following query politely and concisely; however, \
+#                     elaborate when necessary."},
+#                 {"role": "user", "content": query}
+#             ]
+#         )
+#         reply = response.choices[0].message['content']
+#         return reply
     
-    except openai.error.AuthenticationError as e:
-        return "Authentication error: Please check your API key."
-    except openai.error.RateLimitError as e:
-        return "Rate limit exceeded. Please try again later."
-    except openai.error.APIConnectionError as e:
-        return f"Failed to connect to the OpenAI API: {e}"
-    except openai.error.Timeout as e:
-        return f"Request timed out: {e}"
-    except openai.error.APIError as e:
-        return "OpenAI API returned an API error: {e}"
-    except Exception as e:
-        return "An unexpected error occurred: {e}"
+#     except openai.error.AuthenticationError as e:
+#         return "Authentication error: Please check your API key."
+#     except openai.error.RateLimitError as e:
+#         return "Rate limit exceeded. Please try again later."
+#     except openai.error.APIConnectionError as e:
+#         return f"Failed to connect to the OpenAI API: {e}"
+#     except openai.error.Timeout as e:
+#         return f"Request timed out: {e}"
+#     except openai.error.APIError as e:
+#         return "OpenAI API returned an API error: {e}"
+#     except Exception as e:
+#         return "An unexpected error occurred: {e}"
+
+def query_model(query):
+    params = {
+        "userId": 1,
+        "api_key": API_KEY
+    
+    }
+    response = requests.get(MODEL_ADDR, params=params)
+    if response.status_code == 200:
+        # Convert response to JSON
+        data = response.json()
+        if data:
+            return list(data.keys())[0]
+    else:
+        return "Error processing query"
+        
         
 def speak_response(query_response):
-    engine.say("Hello, Raspberry Pi!")
+    engine.say(query_response)
     engine.runAndWait()  
 
 def main():
@@ -112,7 +126,8 @@ def main():
             # When the keyword is detected, record the following query
             query = record_query(recognizer, microphone)
             if query:
-                query_response = query_third_party(query)
+                # query_response = query_third_party(query)
+                query_response = query_model(query)
             else:
                 query_response = MISSED_QUERY_STR
             speak_response(query_response)
