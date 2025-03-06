@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Vault Device</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+
+<body>
+    <header class="header">
+        <h1>Voice Vault</h1>
+    </header>
+
+    <div class="container">
+        <section class="section">
+            <h2>VM Configuration</h2>
+            <form id="vmForm">
+                <div class="form-group">
+                    <input type="text" id="vmUrl" placeholder="Enter VM URL" required>
+                    <button type="submit">Save Configuration</button>
+                </div>
+            </form>
+            <div id="currentVM"></div>
+        </section>
+
+        <section class="section">
+            <h2>Music Section</h2>
+            <p>TODO</p>
+        </section>
+    </div>
+
+</body>
+
+</html>
