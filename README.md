@@ -5,7 +5,7 @@
 David
 - [ ] Docker containers: install a model, write a python script that takes the request passes it to model and outputs back the response
 - [ ] Put docker containers in a registry or something like that
-- [ ] Pick models we are actually doing
+- [ ] Pick models we are actually doing: Llama 3.1 8b params (https://huggingface.co/meta-llama/Llama-3.1-8B), Vicuna v1.5 7b params (https://huggingface.co/lmsys/vicuna-7b-v1.5), Falcon-7B-Instruct (https://huggingface.co/tiiuae/falcon-7b-instruct), Qwen2.7-7B-Instruct (https://huggingface.co/Qwen/Qwen2.5-7B-Instruct)
 - [ ] Make alarm feature: creating at most 1 alarm, they should be able to cancel, default sound
 - [ ] Do prompt engineering testing: taking different prompts in different models and comparing outputs agasint stuff like profranity
 
