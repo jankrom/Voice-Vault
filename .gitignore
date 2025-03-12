@@ -1,8 +1,8 @@
 .venv/
-device/.env
-device/output.wav
-device/.env
-device/vosk-model/
+device/app/.env
+device/app/output.wav
+device/app/.env
+device/app/vosk-model/
 .DS_Store
-device/.DS_Store
+device/app/.DS_Store
 
