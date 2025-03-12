@@ -21,5 +21,5 @@ Justin
 - [ ] Make privacy terms of service (ToS)
 - [ ] Update main website to have alarm and music feature advertisement
 - [ ] Update main website to no longer be placeholder text
-- [ ] Update raspbery pi website to be password protected
+- [x] Update raspbery pi website to be password protected
 - [ ] Update raspbery pi website with ability to add music and show song titles
