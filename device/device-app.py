@@ -10,6 +10,7 @@ import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 import time
 import random
+from datetime import datetime
 
 #Loading env file
 load_dotenv()
@@ -22,6 +23,8 @@ API_KEY = os.getenv("API_KEY")
 #Str constants
 FOUND_KEYWORD_STR_ARRAY = ["Hi what can I help you with?", "Hey, whats up?", "What can I help you with?"]
 MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
+with open("system-prompt.txt", 'r') as file:
+    SYSTEM_PROMPT = file.read()
 
 #Variable for controlling mic capture
 listen_enabled = True
@@ -60,8 +63,14 @@ def query_model(query):
         if data:
             return list(data.keys())[0]
     else:
-        return "Error processing query"
-        
+        return "{'type': 'Error', 'data': 'Error connecting to server'}"
+
+#formatting query + adding system prompt
+def format_query(raw_query):
+    query = SYSTEM_PROMPT + f"The approximate datetime is {datetime.now()} use this approximation if the user asks for the time \n ----End System Prompt---- \n ['{raw_query}', []]"
+    
+    return query
+       
 #This function outputs audio using the speaker      
 def speak(query_response):
     global listen_enabled
@@ -100,6 +109,42 @@ def speak(query_response):
     
     wf.close()
 
+def create_timer(timer_length):
+    pass
+
+def cancel_timer():
+    pass
+
+def handle_timer(timer_metadata):
+    if timer_metadata.isnumeric():
+        create_timer(int(timer_metadata))
+    elif timer_metadata == "CANCEL":
+        cancel_timer()
+    else:
+        speak("An error occured trying to handle your timer")
+        
+
+def handle_music(music_metadata):
+    pass
+
+def extract_answer(query_response):
+    try:
+        response = json.loads(query_response)
+        
+        try:
+            if response["type"] == "LLM":
+                speak(response["data"])
+            elif response["type"] == "Timer":
+                handle_timer(response["data"])
+            elif response["type"] == "Music":
+                handle_music(response["data"])
+                
+        except KeyError as e:
+            speak("An error occured processing your request.")
+        
+    except json.JSONDecodeError as e:
+        speak("An error occured processing your request.")
+
 def main():
     # Open audio input stream
     with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype="int16",
@@ -125,7 +170,7 @@ def main():
                     if text:
                         text = text.replace("hey what can i help you with", "")
                         print(f"Heard query: {text}")
-                        query_response = query_model(text)
+                        query_response = query_model(format_query(text))
                         speak(query_response)
                         keyword_detected = False
                         print("Listening for keyword...")
