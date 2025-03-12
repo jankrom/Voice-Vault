@@ -1,0 +1,8 @@
+.venv/
+device/.env
+device/output.wav
+device/.env
+device/vosk-model/
+.DS_Store
+device/.DS_Store
+

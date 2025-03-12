@@ -1,98 +1,52 @@
-import speech_recognition as sr
 import os
-import pyttsx3
+import pyaudio
+import wave
+from TTS.api import TTS
 import requests
+from dotenv import load_dotenv
+import json
+import queue
+import sounddevice as sd
+from vosk import Model, KaldiRecognizer
+import time
+import random
 
+#Loading env file
+load_dotenv()
 
-
-KEYWORD = os.getenv("ACTIVATION_KEYWORD")
+#Getting envs
+KEYWORD = os.getenv("ACTIVATION_KEYWORD").lower()
 MODEL_ADDR = os.getenv("MODEL_ADDR")
 API_KEY = os.getenv("API_KEY")
 
+#Str constants
+FOUND_KEYWORD_STR_ARRAY = ["Hi what can I help you with?", "Hey, whats up?", "What can I help you with?"]
 MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
-engine = pyttsx3.init()
 
+#Variable for controlling mic capture
+listen_enabled = True
 
-TEST_OUTPUT_FILE = "output.txt"
+#TTS model intialization - Coqui TTS
+model_name = "tts_models/en/ljspeech/tacotron2-DDC"
+tts = TTS(model_name=model_name)
 
-def listen(recognizer, microphone):
-    """
-    Listen for the keyword using the microphone and offline recognition.
-    Returns the recognized text (or an empty string if nothing is recognized).
-    """
-    print("Listening for the keyword...")
-    with microphone as source:
-        # Calibrate for ambient noise (optional but recommended)
-        recognizer.adjust_for_ambient_noise(source, duration=1)
-        audio = recognizer.listen(source)
+#STT model intialization - Vosk
+model = Model("vosk-model")  
+recognizer = KaldiRecognizer(model, 16000)
+q = queue.Queue()
 
-    try:
-        # Using pocketsphinx for offline recognition.
-        recognized_text = recognizer.recognize_sphinx(audio)
-        print("Heard (for keyword):", recognized_text)
-        return recognized_text.lower()  # convert to lowercase for comparison
-    except sr.UnknownValueError:
-        # Speech was unintelligible
-        print("Could not understand audio for keyword.")
-    except sr.RequestError as e:
-        # Error with the recognition engine
-        print("Sphinx error: {0}".format(e))
-    return ""
+#Audio Output
+p = pyaudio.PyAudio()
 
-def record_query(recognizer, microphone):
-    """
-    Records the spoken query after the keyword has been detected.
-    Returns the recognized query text.
-    """
-    print("Keyword detected. Please speak your query...")
-    with microphone as source:
-        # Re-calibrate for ambient noise before recording query
-        recognizer.adjust_for_ambient_noise(source, duration=1)
-        audio = recognizer.listen(source)
+#Call back function for mic capture
+def audio_callback(indata, frames, time, status):
+    if status:
+        print(status)
+    if listen_enabled:
+        q.put(bytes(indata)) 
 
-    try:
-        # Recognize the query using pocketsphinx
-        query_text = recognizer.recognize_sphinx(audio)
-        print("Recognized query:", query_text)
-        return query_text
-    except sr.UnknownValueError:
-        print("Could not understand the query.")
-    except sr.RequestError as e:
-        print("Sphinx error: {0}".format(e))
-    return ""
-
-# def query_third_party(query):
-#     client = openai(
-#         api_key=API_KEY,
-#         base_url=MODEL_ADDR
-#     )
-    
-#     try:
-#         response = client.chat.completions.create(
-#             model="gemini-1.5-flash",
-#             messages=[
-#                 {"role": "system", "content": "You are a helpful conversational assistant.\
-#                     Please answer the following query politely and concisely; however, \
-#                     elaborate when necessary."},
-#                 {"role": "user", "content": query}
-#             ]
-#         )
-#         reply = response.choices[0].message['content']
-#         return reply
-    
-#     except openai.error.AuthenticationError as e:
-#         return "Authentication error: Please check your API key."
-#     except openai.error.RateLimitError as e:
-#         return "Rate limit exceeded. Please try again later."
-#     except openai.error.APIConnectionError as e:
-#         return f"Failed to connect to the OpenAI API: {e}"
-#     except openai.error.Timeout as e:
-#         return f"Request timed out: {e}"
-#     except openai.error.APIError as e:
-#         return "OpenAI API returned an API error: {e}"
-#     except Exception as e:
-#         return "An unexpected error occurred: {e}"
-
+#Querying model
+#TODO: Change this from dummy data to actually query the model    
 def query_model(query):
     params = {
         "userId": 1,
@@ -108,29 +62,74 @@ def query_model(query):
     else:
         return "Error processing query"
         
-        
-def speak_response(query_response):
-    engine.say(query_response)
-    engine.runAndWait()  
+#This function outputs audio using the speaker      
+def speak(query_response):
+    global listen_enabled
+    
+    #Write speech to wav file
+    tts.tts_to_file(text=query_response, file_path="output.wav") 
+    wf = wave.open("output.wav", 'rb')
+    
+    #open stream
+    stream = p.open(
+        format=p.get_format_from_width(wf.getsampwidth()),
+        channels=wf.getnchannels(),
+        rate=wf.getframerate(),
+        output=True
+    )
+    
+    chunk_size = 1024
+    audio_data = wf.readframes(chunk_size)
+
+    #Turning off mic during audio output
+    listen_enabled = False
+    
+    #Outputting audio
+    while audio_data:
+        stream.write(audio_data)
+        audio_data = wf.readframes(chunk_size)
+    
+    #Short sleep so mic/speaker don't overlap
+    time.sleep(0.2)
+    
+    #Turning mic back on
+    listen_enabled = True
+    
+    stream.stop_stream()
+    stream.close()
+    
+    wf.close()
 
 def main():
-    recognizer = sr.Recognizer()
-    # Use the default microphone (the built-in mic on your Mac)
-    microphone = sr.Microphone()
+    # Open audio input stream
+    with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype="int16",
+                        channels=1, callback=audio_callback):
+        print("Listening for keyword...")
 
-    print("Starting speech recognition program. Say the keyword to trigger query recording.")
-    while True:
-        # Continuously listen for the keyword
-        detected_text = listen(recognizer, microphone)
-        if KEYWORD in detected_text:
-            # When the keyword is detected, record the following query
-            query = record_query(recognizer, microphone)
-            if query:
-                # query_response = query_third_party(query)
-                query_response = query_model(query)
-            else:
-                query_response = MISSED_QUERY_STR
-            speak_response(query_response)
+        keyword_detected = False
+        while True:
+            data = q.get()
+
+            if recognizer.AcceptWaveform(data):
+                result = json.loads(recognizer.Result())
+                text = result.get("text", "")
+
+                if not keyword_detected:
+                    
+                    if KEYWORD in text.lower():
+                        print("Keyword detected! Speak your query:")
+                        speak(random.choice(FOUND_KEYWORD_STR_ARRAY))
+                        
+                        keyword_detected = True
+                else:
+                    if text:
+                        text = text.replace("hey what can i help you with", "")
+                        print(f"Heard query: {text}")
+                        query_response = query_model(text)
+                        speak(query_response)
+                        keyword_detected = False
+                        print("Listening for keyword...")
+    
 
 if __name__ == '__main__':
     try:
