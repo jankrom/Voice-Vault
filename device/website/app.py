@@ -1,11 +1,19 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import os
 from functools import wraps
+import lmdb
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 VM_CONFIG_FILE = "vm_config.txt"
 PASSWORD_FILE = "../password.txt"
+
+# Creating/Opening Song DB
+env = lmdb.open('song_db', map_size=10**7)
+SONG_FILES = './songs'
+os.makedirs(SONG_FILES, exist_ok=True)
 
 
 def get_stored_password():
@@ -71,6 +79,61 @@ def get_vm_config():
     except Exception as e:
         print(f"Error reading VM config: {e}")
     return jsonify({"vm_url": None})
+
+@app.route("/get_song_names")
+@requires_auth
+def get_songs():
+    try:
+        with env.begin() as txn:
+            with txn.cursor() as cursor:
+                all_song_names = [key.decode('utf-8') for key in cursor.iternext(keys=True, values=False)]
+        return jsonify({"song_names": all_song_names})
+    except Exception as e:
+        print(f"Error returning song names: {e}")
+    return jsonify({"song_names": None})
+
+@app.route("/add_song", methods=["POST"])
+@requires_auth
+def add_song():
+    try:
+        if 'file' not in request.files or 'name' not in request.form:
+            return jsonify({'message': 'File and name are required.'}), 400
+
+        file = request.files['file']
+        name = request.form['name']
+        if file.filename == '':
+            return jsonify({'message': 'No file selected.'}), 400
+        
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(SONG_FILES, filename))
+            with env.begin(write=True) as txn:
+                txn.put(name.encode('utf-8'), filename.encode('utf-8'))
+            return jsonify({'message': f'File "{filename}" successfully uploaded.'}), 200
+    except Exception as e:
+        print(f"Error returning song names: {e}")
+    return jsonify({"song_names": None})
+
+@app.route("/delete_song", methods=["DELETE"])
+@requires_auth
+def delete_song():
+    try:
+        
+        if 'name' not in request.form:
+            return jsonify({'message': 'Name is required.'}), 400
+        
+        songName = request.form['name']
+        print("sn" + songName)        
+        with env.begin(write=True) as txn:
+            filename = txn.get(songName.encode('utf-8')).decode('utf-8')
+            print("fn" + filename) 
+            os.remove(os.path.join(SONG_FILES, filename))
+            result = txn.delete(songName.encode('utf-8'))
+            if result:
+                return jsonify({'message': f'File "{songName}" successfully deleted.'}), 200    
+    except Exception as e:
+        print(f"Error returning song names: {e}")
+    return jsonify({'message': 'No file to delete.'}), 400
 
 
 @app.route("/logout")

@@ -33,7 +33,13 @@
 
         <section class="section">
             <h2>Music Section</h2>
-            <p>TODO</p>
+                <h3>Song Upload</h3>
+                <input type="text" id="songName" placeholder="Enter Song Name" required>
+                <input type="file" id="fileInput" accept=".mp3,.wav,audio/*">
+                <button onclick="uploadSong()">Upload</button>
+                <div id="status"></div>
+                <h4>Uploaded Files:</h4>
+                <ul id="fileList"></ul>
         </section>
     </div>
 
