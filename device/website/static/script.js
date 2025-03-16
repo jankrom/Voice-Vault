@@ -76,6 +76,7 @@ function uploadSong() {
   .then(response => response.json())
   .then(result => {
       document.getElementById('status').innerText = result.message;
+      loadFileList();
   })
   .catch(error => {
       document.getElementById('status').innerText = 'Upload failed.';
@@ -108,7 +109,7 @@ function loadFileList() {
       console.log(data)
 
       if (data.song_names.length === 0) {
-          fileList.innerHTML = '<li>No files uploaded yet.</li>';
+          fileList.innerHTML = '<li>No songs uploaded yet.</li>';
       } else {
           data.song_names.forEach(song => {
               // const li = document.createElement('li');
@@ -132,7 +133,7 @@ function loadFileList() {
               const delButton = document.createElement('button');
               delButton.textContent = 'X';
               delButton.className = 'delete-button';
-              delButton.onclick = () => deleteSong(filename);
+              delButton.onclick = () => deleteSong(song);
 
               li.appendChild(filenameSpan);   // then filename
               li.appendChild(delButton);      // Button first (left-justified)
