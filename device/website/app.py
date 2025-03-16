@@ -114,25 +114,21 @@ def add_song():
         print(f"Error returning song names: {e}")
     return jsonify({"song_names": None})
 
-@app.route("/delete_song", methods=["DELETE"])
 @requires_auth
-def delete_song():
+@app.route('/delete_song/<songName>', methods=['DELETE'])
+def delete_song(songName):
     try:
-        
-        if 'name' not in request.form:
-            return jsonify({'message': 'Name is required.'}), 400
-        
-        songName = request.form['name']
-        print("sn" + songName)        
-        with env.begin(write=True) as txn:
-            filename = txn.get(songName.encode('utf-8')).decode('utf-8')
-            print("fn" + filename) 
-            os.remove(os.path.join(SONG_FILES, filename))
-            result = txn.delete(songName.encode('utf-8'))
-            if result:
-                return jsonify({'message': f'File "{songName}" successfully deleted.'}), 200    
+         with env.begin(write=True) as txn:
+             filename = txn.get(songName.encode('utf-8')).decode('utf-8')
+             if filename:
+                 os.remove(os.path.join(SONG_FILES, filename))
+                 result = txn.delete(songName.encode('utf-8'))
+                 if result:
+                     return jsonify({'message': f'File "{songName}" successfully deleted.'}), 200
+             return jsonify({'message': f'File "{songName}" not found.'}), 400
+            
     except Exception as e:
-        print(f"Error returning song names: {e}")
+        print(f"Error deleting song name: {e}")
     return jsonify({'message': 'No file to delete.'}), 400
 
 

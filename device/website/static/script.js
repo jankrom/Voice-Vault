@@ -83,6 +83,21 @@ function uploadSong() {
   });
 }
 
+function deleteSong(songName) {
+  if (!confirm(`Are you sure you want to delete "${songName}"?`)) return;
+
+  fetch('/delete_song/' + encodeURIComponent(songName), { method: 'DELETE' })
+  .then(response => response.json())
+  .then(result => {
+      document.getElementById('status').innerText = result.message;
+      loadFileList();
+  })
+  .catch(error => {
+      document.getElementById('status').innerText = 'Deletion failed.';
+      console.error('Error:', error);
+  });
+}
+
 
 function loadFileList() {
   fetch('/get_song_names')
@@ -96,8 +111,33 @@ function loadFileList() {
           fileList.innerHTML = '<li>No files uploaded yet.</li>';
       } else {
           data.song_names.forEach(song => {
+              // const li = document.createElement('li');
+              // li.textContent = song;
+
+              // const delButton = document.createElement('button');
+              // delButton.textContent = 'X';
+              // delButton.className = 'delete-button';
+              // delButton.onclick = () => deleteSong(song);
+              // li.appendChild(delButton);
+
+              // fileList.appendChild(li);
+
               const li = document.createElement('li');
-              li.textContent = song;
+              li.style.display = 'flex';
+              li.style.alignItems = 'center';
+
+              const filenameSpan = document.createElement('span');
+              filenameSpan.textContent = song;
+
+              const delButton = document.createElement('button');
+              delButton.textContent = 'X';
+              delButton.className = 'delete-button';
+              delButton.onclick = () => deleteSong(filename);
+
+              li.appendChild(filenameSpan);   // then filename
+              li.appendChild(delButton);      // Button first (left-justified)
+              
+
               fileList.appendChild(li);
           });
       }

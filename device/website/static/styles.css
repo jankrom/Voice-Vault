@@ -72,3 +72,34 @@ button:hover {
   border-radius: 4px;
   display: none;
 }
+
+.delete-button {
+  margin-left: 10px; 
+  background-color: transparent;
+  color: red;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline; 
+  border: 1px solid #ccc;
+}
+
+#fileList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  border: 1px solid #ccc;      
+  border-radius: 6px;          
+}
+
+#fileList {
+  padding: 0;
+  margin: 0;
+  list-style: none;  /* removes default bullet points */
+}
+
+
+
