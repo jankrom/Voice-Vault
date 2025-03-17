@@ -10,7 +10,8 @@ import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 import time
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
+import threading
 
 #Loading env file
 load_dotenv()
@@ -40,6 +41,8 @@ q = queue.Queue()
 
 #Audio Output
 p = pyaudio.PyAudio()
+
+alarm_event = threading.Event()
 
 #Call back function for mic capture
 def audio_callback(indata, frames, time, status):
@@ -109,19 +112,71 @@ def speak(query_response):
     
     wf.close()
 
-def create_timer(timer_length):
-    pass
+def create_alarm(alarm_time):
+    # Convert alarm_time string to hours and minutes
+    hours = alarm_time // 100
+    minutes = alarm_time % 100
+    
+    # Get current time
+    now = datetime.now()
+    
+    # Create alarm time for today
+    alarm_datetime = now.replace(hour=hours, minute=minutes, second=0, microsecond=0)
+    
+    # If alarm time is in the past, set it for tomorrow
+    if alarm_datetime < now:
+        alarm_datetime += timedelta(days=1)
+    
+    # Calculate seconds until alarm
+    delay = (alarm_datetime - now).total_seconds()
 
-def cancel_timer():
-    pass
+    print(delay)
+    
+    # Start alarm thread
+    def alarm_thread():
+        # Wait for either the delay time to pass or the event to be set
+        if not alarm_event.wait(
+            delay
+        ):
+            # Play alarm sound
+            wf = wave.open("alarm.wav", "rb")
+            stream = p.open(
+                format=p.get_format_from_width(wf.getsampwidth()),
+                channels=wf.getnchannels(),
+                rate=wf.getframerate(),
+                output=True
+            )
+            
+            chunk_size = 1024
+            audio_data = wf.readframes(chunk_size)
+            
+            # Output alarm audio
+            while audio_data:
+                stream.write(audio_data)
+                audio_data = wf.readframes(chunk_size)
+                
+            stream.stop_stream()
+            stream.close()
+            wf.close()
 
-def handle_timer(timer_metadata):
-    if timer_metadata.isnumeric():
-        create_timer(int(timer_metadata))
-    elif timer_metadata == "CANCEL":
-        cancel_timer()
+    # Clear any previous event signal
+    alarm_event.clear()
+    # Start thread for alarm
+    threading.Thread(target=alarm_thread, name="alarm_thread").start()
+
+    speak(f"Alarm set for {hours:02d}:{minutes:02d}")
+
+def cancel_alarm():
+    alarm_event.set()
+    speak("Alarm cancelled")
+
+def handle_alarm(alarm_metadata):
+    if alarm_metadata.type == "Create":
+        create_alarm(int(alarm_metadata.time))
+    elif alarm_metadata.type == "Cancel":
+        cancel_alarm()
     else:
-        speak("An error occured trying to handle your timer")
+        speak("An error occured trying to handle your alarm")
         
 
 def handle_music(music_metadata):
@@ -134,8 +189,8 @@ def extract_answer(query_response):
         try:
             if response["type"] == "LLM":
                 speak(response["data"])
-            elif response["type"] == "Timer":
-                handle_timer(response["data"])
+            elif response["type"] == "Alarm":
+                handle_alarm(response["data"])
             elif response["type"] == "Music":
                 handle_music(response["data"])
                 
