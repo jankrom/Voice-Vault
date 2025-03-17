@@ -81,7 +81,9 @@ button:hover {
   font-weight: bold;
   cursor: pointer;
   display: inline; 
-  border: 1px solid #ccc;
+  border: 0.15rem solid #ccc;
+  font-size:larger;
+  font-family: "Roboto", sans-serif;
 }
 
 #fileList li {
@@ -91,7 +93,7 @@ button:hover {
   padding: 8px;
   margin-bottom: 8px;
   font-weight: bold;
-  border: 1px solid #ccc;      
+  border: 0.15rem solid #ccc;      
   border-radius: 6px;     
   transition: background-color 0.2s ease;     
 }
