@@ -1,24 +1,26 @@
-import os
-import pyaudio
-import wave
-from TTS.api import TTS
-import requests
-from dotenv import load_dotenv
 import json
+import os
 import queue
-import sounddevice as sd
-from vosk import Model, KaldiRecognizer
-import time
 import random
-import lmdb
-from datetime import datetime, timedelta
 import threading
+import time
+import wave
+from datetime import datetime, timedelta
+
+import lmdb
+import music_play
+import pyaudio
+import requests
+import sounddevice as sd
+from dotenv import load_dotenv
+from TTS.api import TTS
+from vosk import KaldiRecognizer, Model
 
 #Loading env file
 load_dotenv()
 
 #Opening song db in readonly mode
-env = lmdb.open('song_db', readonly=True, lock=False)
+env = lmdb.open('../website/song_db', readonly=True, lock=False)
 
 #Path to directory holding songs
 SONG_PATH = "../website/song_db/"
@@ -48,6 +50,9 @@ q = queue.Queue()
 
 #Audio Output
 p = pyaudio.PyAudio()
+
+#music player
+music_player = None
 
 alarm_event = threading.Event()
 
@@ -136,8 +141,6 @@ def create_alarm(alarm_time):
     
     # Calculate seconds until alarm
     delay = (alarm_datetime - now).total_seconds()
-
-    print(delay)
     
     # Start alarm thread
     def alarm_thread():
@@ -185,8 +188,25 @@ def handle_alarm(alarm_metadata):
     else:
         speak("An error occured trying to handle your timer")
 
-def play_song(song_file):
-    pass
+def play_song(song_name, song_file):
+    global music_player
+    
+    music_player = music_play.AudioPlayer(song_file, p)
+    
+    speak(f"Playing {song_name}")
+    
+    time.sleep(1)
+    
+    music_player.play()
+
+def stop_song():
+    global music_player
+    
+    if music_player:
+        music_player.stop()
+        music_player = None
+    else:
+        speak("No music currently playing")
 
 def song_file_exists(song_file):
     file_path = os.path.join(SONG_PATH, song_file)
@@ -194,20 +214,25 @@ def song_file_exists(song_file):
         
 
 def handle_music(music_metadata):
+    global music_player
+    
     if music_metadata == "STOP":
-        pass
+        stop_song()
     elif music_metadata == "PAUSE":
-        pass
+        if music_player:
+            music_player.pause()
     elif music_metadata == "UNPAUSE":
-        pass
+        if music_player:
+            music_player.unpause()
     else:
         with env.begin() as txn:
-            song_file = txn.get(music_metadata)
+            song_file = txn.get(music_metadata.encode('utf-8')).decode('utf-8')
             if song_file and song_file_exists(song_file):
-                play_song(song_file)
+                play_song(music_metadata, song_file)
+            else:
+                speak("An error was encountered playing that song. Please check \
+                    that it was properly uploaded.")
                 
-    
-
 def extract_answer(query_response):
     try:
         response = json.loads(query_response)
@@ -224,7 +249,7 @@ def extract_answer(query_response):
             speak("An error occured processing your request.")
         
     except json.JSONDecodeError as e:
-        speak("An error occured processing your request.")
+        speak("An error occured decoding your request.")
 
 def main():
     # Open audio input stream
