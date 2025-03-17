@@ -11,9 +11,16 @@ from vosk import Model, KaldiRecognizer
 import time
 import random
 from datetime import datetime
+import lmdb
 
 #Loading env file
 load_dotenv()
+
+#Opening song db in readonly mode
+env = lmdb.open('song_db', readonly=True, lock=False)
+
+#Path to directory holding songs
+SONG_PATH = "../website/song_db/"
 
 #Getting envs
 KEYWORD = os.getenv("ACTIVATION_KEYWORD").lower()
@@ -122,10 +129,29 @@ def handle_timer(timer_metadata):
         cancel_timer()
     else:
         speak("An error occured trying to handle your timer")
-        
+
+def play_song(song_file):
+    pass
+
+def song_file_exists(song_file):
+    file_path = os.path.join(SONG_PATH, song_file)
+    return os.path.isfile(file_path)
+     
 
 def handle_music(music_metadata):
-    pass
+    if music_metadata == "STOP":
+        pass
+    elif music_metadata == "PAUSE":
+        pass
+    elif music_metadata == "UNPAUSE":
+        pass
+    else:
+        with env.begin() as txn:
+            song_file = txn.get(music_metadata)
+            if song_file and song_file_exists(song_file):
+                play_song(song_file)
+                
+    
 
 def extract_answer(query_response):
     try:

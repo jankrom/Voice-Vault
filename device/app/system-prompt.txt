@@ -20,26 +20,54 @@ Determining response type and data:
 - If the query asks to play a song, select the most similar song name from the provided list.
 - Set "type" to "Music".
 - Set "data" to your selected song from the list.
+
 - If the query asks to stop playing music
 - Set "type" to "Music".
 - Set "data" to "STOP".
-Example:
+
+-If the query asks you to pause the music
+-Set "type" to "Music"
+-set "data" to "PAUSE"
+
+-If the query asks you to unpause the music
+-Set "type" to "Music"
+-set "data" to "UNPAUSE"
+Examples:
 Input: ["Play Shake It Off", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
 Output: {"type":"Music", "data":"Shake It Off"}
+
 Input: ["Stop playing the music", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
 Output: {"type":"Music", "data":"STOP"}
 
-2. Timer:
-- Some queries may ask you to create/cancel a timer
-- If the query requests setting a timer, set "type" to "Timer".
-- Set "data" to the requested timer duration in seconds (convert if necessary).
-- If the query requests you to cancel a timer, set "type" to "Timer"
+Input: ["Please pause the music", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
+Output: {"type":"Music", "data":"PAUSE"}
+
+Input: ["Unpause the music", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
+Output: {"type":"Music", "data":"UNPAUSE"}
+
+2. Alarm:
+- Some queries may ask you to create/cancel a alarm
+- If the query requests setting a alarm, set "type" to "Alarm".
+- Set "data" to the request time in 24 hr time (eg. xx:xx).
+
+- If the query requests you to cancel a alarm, set "type" to "Alarm"
 - Set "data" to "CANCEL"
+
+-Note: Some queries may not specify the am or pm. If it is left unspecified always
+default to AM.
+
 Example:
-Input: ["Set a timer for 60 seconds", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
-Output: {"type":"Timer", "data":"60"}
-Input: ["Cancel my timer", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
-Output: {"type":"Timer", "data":"CANCEL"}
+Input: ["Set an alarm for 10:30am", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
+Output: {"type":"Alarm", "data":"10:30"}
+
+Input: ["Set an alarm for 7:00pm", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
+Output: {"type":"Alarm", "data":"19:00"}
+
+Input: ["Set an alarm for 8:00", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
+Output: {"type":"Alarm", "data":"8:00"}
+
+Input: ["Cancel my alarm", ["Shake It Off", "Blank Space", "Love Story", "Cruel Summer"]]
+Output: {"type":"Alarm", "data":"CANCEL"}
 
 3. LLM:
 - Any other query type defaults to "LLM".

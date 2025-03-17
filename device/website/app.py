@@ -3,6 +3,10 @@ import os
 from functools import wraps
 import lmdb
 from werkzeug.utils import secure_filename
+from pydub import AudioSegment
+from io import BytesIO
+import random
+
 
 
 app = Flask(__name__)
@@ -92,6 +96,14 @@ def get_songs():
         print(f"Error returning song names: {e}")
     return jsonify({"song_names": None})
 
+# Function to convert MP3 data from HTTP request to WAV
+def mp3_to_wav(file_storage, directory=SONG_FILES):
+    audio = AudioSegment.from_mp3(BytesIO(file_storage.read()))
+    randname = str(random.randrange(2**32))
+    wav_path = os.path.join(directory, f"{randname}.wav")
+    audio.export(wav_path, format="wav")
+    return f"{randname}.wav"
+
 @app.route("/add_song", methods=["POST"])
 @requires_auth
 def add_song():
@@ -106,12 +118,14 @@ def add_song():
         
         if file:
             filename = secure_filename(file.filename)
-            file.save(os.path.join(SONG_FILES, filename))
+            
+            mp3_converted_song = mp3_to_wav(file)
+            # file.save(os.path.join(SONG_FILES, filename))
             with env.begin(write=True) as txn:
-                txn.put(name.encode('utf-8'), filename.encode('utf-8'))
+                txn.put(name.encode('utf-8'), mp3_converted_song.encode('utf-8'))
             return jsonify({'message': f'File "{filename}" successfully uploaded.'}), 200
     except Exception as e:
-        print(f"Error returning song names: {e}")
+        print(f"Error adding song: {e}")
     return jsonify({"song_names": None})
 
 @requires_auth
