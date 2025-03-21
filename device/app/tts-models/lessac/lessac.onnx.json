@@ -1,7 +1,7 @@
 {
   "audio": {
-    "sample_rate": 22050,
-    "quality": "medium"
+    "sample_rate": 16000,
+    "quality": "low"
   },
   "espeak": {
     "voice": "en-us"
