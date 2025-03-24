@@ -78,9 +78,9 @@ def query_model(query):
         data = response.json()
         if data:
             # return list(data.keys())[0]
-            return '{"type":"Music", "data": "mime"}'
+            return {"type":"Music", "data": "mime"}
     else:
-        return "{'type': 'Error', 'data': 'Error connecting to server'}"
+        return '{"type": "Error", "data": "Error connecting to server"}'
 
 #formatting query + adding system prompt
 def format_query(raw_query):
@@ -233,31 +233,31 @@ def handle_music(music_metadata):
             music_player.unpause()
     else:
         with env.begin() as txn:
-            song_file = txn.get(music_metadata.encode('utf-8')).decode('utf-8')
-            song_file = os.path.join(SONG_FILE_PATH, song_file)
-            if song_file and os.path.isfile(song_file):
-                play_song(music_metadata, song_file)
+            song_file = txn.get(music_metadata.encode('utf-8'))
+            if song_file:
+                song_file = song_file.decode('utf-8')
+                song_file = os.path.join(SONG_FILE_PATH, song_file)
+                if song_file and os.path.isfile(song_file):
+                    play_song(music_metadata, song_file)
+                else:
+                    speak("An error was encountered playing that song. Please check \
+                        that it was properly uploaded.")
             else:
-                speak("An error was encountered playing that song. Please check \
-                    that it was properly uploaded.")
+                speak("Song not found")
                 
-def extract_answer(query_response):
+def extract_answer(response):
+        
     try:
-        response = json.loads(query_response)
+        if response["type"] == "LLM":
+            speak(response["data"])
+        elif response["type"] == "Alarm":
+            handle_alarm(response["data"])
+        elif response["type"] == "Music":
+            handle_music(response["data"])
+            
+    except KeyError as e:
+        speak(f"An error occured processing your request. : {e}")
         
-        try:
-            if response["type"] == "LLM":
-                speak(response["data"])
-            elif response["type"] == "Alarm":
-                handle_alarm(response["data"])
-            elif response["type"] == "Music":
-                handle_music(response["data"])
-                
-        except KeyError as e:
-            speak("An error occured processing your request.")
-        
-    except json.JSONDecodeError as e:
-        speak("An error occured decoding your request.")
 
 def main():
     # Open audio input stream
