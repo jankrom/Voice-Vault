@@ -1,9 +1,6 @@
-import requests
-import json
 from ollama import chat
 from ollama import ChatResponse
 from flask import Flask, request, jsonify
-from serve import start_ollama_server
 
 
 #EXAMPLE REQUEST: curl -X POST http://localhost:6000/interact -H "Content-Type: application/json" -d "{\"message\": \"What is the origin of the name Kemdi?\"}"
