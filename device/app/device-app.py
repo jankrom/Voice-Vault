@@ -13,7 +13,6 @@ import pyaudio
 import requests
 import sounddevice as sd
 from dotenv import load_dotenv
-from TTS.api import TTS
 from vosk import KaldiRecognizer, Model
 
 #Loading env file
@@ -22,8 +21,11 @@ load_dotenv()
 #Opening song db in readonly mode
 env = lmdb.open('../website/song_db', readonly=True, lock=False)
 
-#Path to directory holding songs
+#Path to DB holding song names
 SONG_PATH = "../website/song_db/"
+
+#Path to directory holding song files
+SONG_FILE_PATH = "../website/songs/"
 
 #Getting envs
 KEYWORD = os.getenv("ACTIVATION_KEYWORD").lower()
@@ -39,9 +41,8 @@ with open("system-prompt.txt", 'r') as file:
 #Variable for controlling mic capture
 listen_enabled = True
 
-#TTS model intialization - Coqui TTS
-model_name = "tts_models/en/ljspeech/tacotron2-DDC"
-tts = TTS(model_name=model_name)
+#TTS Model
+tts_model = "lessac"
 
 #STT model intialization - Vosk
 model = Model("vosk-model")  
@@ -76,22 +77,33 @@ def query_model(query):
         # Convert response to JSON
         data = response.json()
         if data:
-            return list(data.keys())[0]
+            # return list(data.keys())[0]
+            return {"type":"Music", "data": "mime"}
     else:
-        return "{'type': 'Error', 'data': 'Error connecting to server'}"
+        return '{"type": "Error", "data": "Error connecting to server"}'
 
 #formatting query + adding system prompt
 def format_query(raw_query):
     query = SYSTEM_PROMPT + f"The approximate datetime is {datetime.now()} use this approximation if the user asks for the time \n ----End System Prompt---- \n ['{raw_query}', []]"
     
     return query
-       
+
+def make_audio_file(query_response, output_filename="output.wav"):
+    cmd = f"echo '{query_response}' | piper \
+        --model ./tts-models/{tts_model}/{tts_model}.onnx\
+        --output_file {output_filename}"
+    os.system(cmd)
+    
+def speak(query_response):    
+    cmd = f"espeak '{query_response}'"
+    os.system(cmd)
+    
 #This function outputs audio using the speaker      
-def speak(query_response):
+def speak_real(query_response):
     global listen_enabled
     
     #Write speech to wav file
-    tts.tts_to_file(text=query_response, file_path="output.wav") 
+    make_audio_file(query_response)
     wf = wave.open("output.wav", 'rb')
     
     #open stream
@@ -182,9 +194,11 @@ def cancel_alarm():
 
 def handle_alarm(alarm_metadata):
     if alarm_metadata.type == "Create":
-        create_alarm(int(alarm_metadata.time))
+        # create_alarm(int(alarm_metadata.time))
+        pass
     elif alarm_metadata.type == "Cancel":
-        cancel_alarm()
+        # cancel_alarm()
+        pass
     else:
         speak("An error occured trying to handle your timer")
 
@@ -207,10 +221,6 @@ def stop_song():
         music_player = None
     else:
         speak("No music currently playing")
-
-def song_file_exists(song_file):
-    file_path = os.path.join(SONG_PATH, song_file)
-    return os.path.isfile(file_path)
         
 
 def handle_music(music_metadata):
@@ -226,30 +236,31 @@ def handle_music(music_metadata):
             music_player.unpause()
     else:
         with env.begin() as txn:
-            song_file = txn.get(music_metadata.encode('utf-8')).decode('utf-8')
-            if song_file and song_file_exists(song_file):
-                play_song(music_metadata, song_file)
+            song_file = txn.get(music_metadata.encode('utf-8'))
+            if song_file:
+                song_file = song_file.decode('utf-8')
+                song_file = os.path.join(SONG_FILE_PATH, song_file)
+                if song_file and os.path.isfile(song_file):
+                    play_song(music_metadata, song_file)
+                else:
+                    speak("An error was encountered playing that song. Please check \
+                        that it was properly uploaded.")
             else:
-                speak("An error was encountered playing that song. Please check \
-                    that it was properly uploaded.")
+                speak("Song not found")
                 
-def extract_answer(query_response):
+def extract_answer(response):
+        
     try:
-        response = json.loads(query_response)
+        if response["type"] == "LLM":
+            speak(response["data"])
+        elif response["type"] == "Alarm":
+            handle_alarm(response["data"])
+        elif response["type"] == "Music":
+            handle_music(response["data"])
+            
+    except KeyError as e:
+        speak(f"An error occured processing your request. : {e}")
         
-        try:
-            if response["type"] == "LLM":
-                speak(response["data"])
-            elif response["type"] == "Alarm":
-                handle_alarm(response["data"])
-            elif response["type"] == "Music":
-                handle_music(response["data"])
-                
-        except KeyError as e:
-            speak("An error occured processing your request.")
-        
-    except json.JSONDecodeError as e:
-        speak("An error occured decoding your request.")
 
 def main():
     # Open audio input stream
@@ -274,10 +285,10 @@ def main():
                         keyword_detected = True
                 else:
                     if text:
-                        text = text.replace("hey what can i help you with", "")
                         print(f"Heard query: {text}")
                         query_response = query_model(format_query(text))
-                        speak(query_response)
+                        print(query_response)
+                        extract_answer(query_response)
                         keyword_detected = False
                         print("Listening for keyword...")
     

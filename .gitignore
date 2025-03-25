@@ -5,8 +5,11 @@ device/app/.env
 device/app/vosk-model/
 .DS_Store
 device/app/.DS_Store
+device/app/output.wav
 device/website/song_db
 device/website/songs
 device/password.txt
+device/app/__pycache__/
+device/website/__pycache__/
 
 env
