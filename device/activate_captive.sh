@@ -2,6 +2,10 @@
 
 echo "Activating Captive Portal..."
 
+# Unblock Wi-Fi interface
+sudo rfkill unblock wifi
+sudo rfkill unblock all
+
 # Stop Wi-Fi client (if running)
 sudo systemctl stop wpa_supplicant || true
 sudo nmcli radio wifi off || true
