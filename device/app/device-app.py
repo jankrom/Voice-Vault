@@ -94,9 +94,12 @@ def make_audio_file(query_response, output_filename="output.wav"):
         --output_file {output_filename}"
     os.system(cmd)
     
-       
+def speak(query_response):    
+    cmd = f"espeak '{query_response}'"
+    os.system(cmd)
+    
 #This function outputs audio using the speaker      
-def speak(query_response):
+def speak_real(query_response):
     global listen_enabled
     
     #Write speech to wav file
