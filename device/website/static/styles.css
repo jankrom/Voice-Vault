@@ -13,6 +13,12 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .header h1 {
   margin: 0;
   font-size: 2.5rem;
@@ -38,10 +44,18 @@ body {
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-input[type="text"] {
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #9ca3af;
+}
+
+input[type="text"],
+input[type="password"],
+select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #374151;
@@ -49,6 +63,15 @@ input[type="text"] {
   background-color: #374151;
   color: white;
   margin-bottom: 1rem;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  background-color: #374151;
+  color: white;
 }
 
 button {
@@ -65,7 +88,13 @@ button:hover {
   background-color: #2563eb;
 }
 
-#currentVM {
+.logout-button {
+  color: white;
+  text-decoration: none;
+}
+
+#currentVM,
+.current-config {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #374151;
@@ -73,17 +102,119 @@ button:hover {
   display: none;
 }
 
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.help-text {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Card styles for landing page */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background-color: #1f2937;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  background-color: #2d3748;
+}
+
+.card h2 {
+  margin-bottom: 1rem;
+}
+
+.card p {
+  color: #9ca3af;
+}
+
+/* Music page specific styles */
+.upload-section {
+  margin-bottom: 2rem;
+}
+
+.upload-section input[type="file"] {
+  background-color: #374151;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.song-list {
+  margin-top: 2rem;
+}
+
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #374151;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.song-name {
+  font-weight: bold;
+}
+
+.status {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 4px;
+  display: none;
+}
+
+.status-success {
+  background-color: #065f46;
+  color: #d1fae5;
+}
+
+.status-error {
+  background-color: #991b1b;
+  color: #fee2e2;
+}
+
 .delete-button {
-  margin-left: 10px; 
+  margin-left: 10px;
   background-color: transparent;
   color: red;
   border: none;
   font-weight: bold;
   cursor: pointer;
-  display: inline; 
-  border: 0.15rem solid #ccc;
-  font-size:larger;
-  font-family: "Roboto", sans-serif;
+  display: inline;
+  border: 1px solid #ccc;
+}
+
+#fileList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
 #fileList li {
@@ -105,9 +236,6 @@ button:hover {
 }
 
 #fileList li:hover {
-  background-color: black; /* turns background black on hover */
-  color: white;            /* optional: text color white for better readability */
+  background-color: black;
+  color: white;
 }
-
-
-

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Vault - Music</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>Music Library</h1>
+            <a href="{{ url_for('logout') }}" class="logout-button">
+                <button type="button">Logout</button>
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+
+        <section class="section">
+            <div class="upload-section">
+                <h2>Upload Music</h2>
+                <div class="form-group">
+                    <label for="songName">Song Name</label>
+                    <input type="text" id="songName" placeholder="Enter song name" required>
+                </div>
+                <div class="form-group">
+                    <label for="fileInput">Select Audio File</label>
+                    <input type="file" id="fileInput" accept=".mp3,.wav,audio/*">
+                </div>
+                <button onclick="uploadSong()">Upload Song</button>
+                <div id="status"></div>
+            </div>
+
+            <div class="song-list">
+                <h2>Your Songs</h2>
+                <ul id="fileList"></ul>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

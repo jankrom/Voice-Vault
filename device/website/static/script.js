@@ -1,17 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Load current VM configuration on page load
-  fetchCurrentVM()
+  // Load configurations on page load if the elements exist
+  if (document.getElementById("vmForm")) {
+    fetchCurrentVM()
+  }
+  if (document.getElementById("wifiForm")) {
+    fetchCurrentWiFi()
+  }
+  if (document.getElementById("wakeWordForm")) {
+    fetchCurrentWakeWord()
+  }
+  if (document.getElementById("fileList")) {
+    loadFileList()
+  }
 
-  // Handle form submission
-  document
-    .getElementById("vmForm")
-    .addEventListener("submit", async function (e) {
+  // Handle VM form submission
+  const vmForm = document.getElementById("vmForm")
+  if (vmForm) {
+    vmForm.addEventListener("submit", async function (e) {
       e.preventDefault()
-
       const vmUrl = document.getElementById("vmUrl").value
-
-      console.log("vmUrl", vmUrl)
-
       try {
         const response = await fetch("/save_vm_config", {
           method: "POST",
@@ -20,21 +27,99 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           body: JSON.stringify({ vm_url: vmUrl }),
         })
-
         if (response.ok) {
-          // Refresh the displayed VM configuration
           fetchCurrentVM()
           document.getElementById("vmUrl").value = ""
+          showStatus(
+            "VM configuration saved successfully!",
+            "success",
+            "vmStatus"
+          )
         } else {
-          console.error("Failed to save VM configuration")
+          showStatus("Failed to save VM configuration", "error", "vmStatus")
         }
       } catch (error) {
         console.error("Error:", error)
+        showStatus("Error saving VM configuration", "error", "vmStatus")
       }
     })
+  }
+
+  // Handle WiFi form submission
+  const wifiForm = document.getElementById("wifiForm")
+  if (wifiForm) {
+    wifiForm.addEventListener("submit", async function (e) {
+      e.preventDefault()
+      const ssid = document.getElementById("ssid").value
+      const password = document.getElementById("password").value
+      try {
+        const response = await fetch("/save_wifi_config", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ssid, password }),
+        })
+        if (response.ok) {
+          fetchCurrentWiFi()
+          document.getElementById("password").value = ""
+          showStatus(
+            "WiFi configuration saved successfully!",
+            "success",
+            "wifiStatus"
+          )
+        } else {
+          showStatus("Failed to save WiFi configuration", "error", "wifiStatus")
+        }
+      } catch (error) {
+        console.error("Error:", error)
+        showStatus("Error saving WiFi configuration", "error", "wifiStatus")
+      }
+    })
+  }
+
+  // Handle Wake Word form submission
+  const wakeWordForm = document.getElementById("wakeWordForm")
+  if (wakeWordForm) {
+    wakeWordForm.addEventListener("submit", async function (e) {
+      e.preventDefault()
+      const wakeWord = document.getElementById("wakeWord").value.trim()
+
+      if (!wakeWord) {
+        showStatus("Please enter a wake word", "error", "wakeWordStatus")
+        return
+      }
+
+      try {
+        const response = await fetch("/save_wake_word", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            wake_word: wakeWord,
+          }),
+        })
+        if (response.ok) {
+          fetchCurrentWakeWord()
+          document.getElementById("wakeWord").value = ""
+          showStatus(
+            "Wake word saved successfully!",
+            "success",
+            "wakeWordStatus"
+          )
+        } else {
+          showStatus("Failed to save wake word", "error", "wakeWordStatus")
+        }
+      } catch (error) {
+        console.error("Error:", error)
+        showStatus("Error saving wake word", "error", "wakeWordStatus")
+      }
+    })
+  }
 })
 
-document.addEventListener('DOMContentLoaded', loadFileList);
+document.addEventListener("DOMContentLoaded", loadFileList)
 
 async function fetchCurrentVM() {
   try {
@@ -53,95 +138,137 @@ async function fetchCurrentVM() {
   }
 }
 
+async function fetchCurrentWiFi() {
+  try {
+    const response = await fetch("/get_wifi_config")
+    const data = await response.json()
+
+    const currentWiFiElement = document.getElementById("currentWiFi")
+    if (data.ssid) {
+      currentWiFiElement.textContent = `Current WiFi Network: ${data.ssid}`
+      currentWiFiElement.style.display = "block"
+    } else {
+      currentWiFiElement.style.display = "none"
+    }
+
+    // Clear the input fields
+    document.getElementById("ssid").value = ""
+    document.getElementById("password").value = ""
+  } catch (error) {
+    console.error("Error fetching WiFi configuration:", error)
+  }
+}
+
+async function fetchCurrentWakeWord() {
+  try {
+    const response = await fetch("/get_wake_word")
+    const data = await response.json()
+
+    const currentWakeWordElement = document.getElementById("currentWakeWord")
+    if (data.wake_word) {
+      currentWakeWordElement.textContent = `Current Wake Word: ${data.wake_word}`
+      currentWakeWordElement.style.display = "block"
+    } else {
+      currentWakeWordElement.style.display = "none"
+    }
+
+    // Clear the input field
+    document.getElementById("wakeWord").value = ""
+  } catch (error) {
+    console.error("Error fetching wake word configuration:", error)
+  }
+}
+
+function showStatus(message, type, elementId) {
+  const status = document.getElementById(elementId)
+  if (status) {
+    status.textContent = message
+    status.className = `status ${
+      type === "success" ? "status-success" : "status-error"
+    }`
+    status.style.display = "block"
+    setTimeout(() => {
+      status.style.display = "none"
+    }, 3000)
+  }
+}
+
 function uploadSong() {
-  const input = document.getElementById('fileInput');
-  const name = document.getElementById('songName').value;
+  const input = document.getElementById("fileInput")
+  const name = document.getElementById("songName").value
   if (!input.files[0]) {
-      alert("Please select a file first.");
-      return;
+    alert("Please select a file first.")
+    return
   }
   if (!name) {
-    alert("Please enter a name.");
-    return;
+    alert("Please enter a name.")
+    return
   }
 
-  const data = new FormData();
-  data.append('file', input.files[0]);
-  data.append('name', name)
+  const data = new FormData()
+  data.append("file", input.files[0])
+  data.append("name", name)
 
-  fetch('/add_song', {
-      method: 'POST',
-      body: data
+  fetch("/add_song", {
+    method: "POST",
+    body: data,
   })
-  .then(response => response.json())
-  .then(result => {
-      document.getElementById('status').innerText = result.message;
-      loadFileList();
-  })
-  .catch(error => {
-      document.getElementById('status').innerText = 'Upload failed.';
-      console.error('Error:', error);
-  });
+    .then((response) => response.json())
+    .then((result) => {
+      document.getElementById("status").innerText = result.message
+      loadFileList()
+    })
+    .catch((error) => {
+      document.getElementById("status").innerText = "Upload failed."
+      console.error("Error:", error)
+    })
 }
 
 function deleteSong(songName) {
-  if (!confirm(`Are you sure you want to delete "${songName}"?`)) return;
+  if (!confirm(`Are you sure you want to delete "${songName}"?`)) return
 
-  fetch('/delete_song/' + encodeURIComponent(songName), { method: 'DELETE' })
-  .then(response => response.json())
-  .then(result => {
-      document.getElementById('status').innerText = result.message;
-      loadFileList();
-  })
-  .catch(error => {
-      document.getElementById('status').innerText = 'Deletion failed.';
-      console.error('Error:', error);
-  });
+  fetch("/delete_song/" + encodeURIComponent(songName), { method: "DELETE" })
+    .then((response) => response.json())
+    .then((result) => {
+      document.getElementById("status").innerText = result.message
+      loadFileList()
+    })
+    .catch((error) => {
+      document.getElementById("status").innerText = "Deletion failed."
+      console.error("Error:", error)
+    })
 }
 
-
 function loadFileList() {
-  fetch('/get_song_names')
-  .then(response => response.json())
-  .then(data => {
-      const fileList = document.getElementById('fileList');
-      fileList.innerHTML = ''; // clear existing list
+  fetch("/get_song_names")
+    .then((response) => response.json())
+    .then((data) => {
+      const fileList = document.getElementById("fileList")
+      fileList.innerHTML = "" // clear existing list
       console.log(data)
 
       if (data.song_names.length === 0) {
-          fileList.innerHTML = '<li>No songs uploaded yet.</li>';
+        fileList.innerHTML = "<li>No songs uploaded yet.</li>"
       } else {
-          data.song_names.forEach(song => {
-              // const li = document.createElement('li');
-              // li.textContent = song;
+        data.song_names.forEach((song) => {
+          const li = document.createElement("li")
+          li.style.display = "flex"
+          li.style.alignItems = "center"
 
-              // const delButton = document.createElement('button');
-              // delButton.textContent = 'X';
-              // delButton.className = 'delete-button';
-              // delButton.onclick = () => deleteSong(song);
-              // li.appendChild(delButton);
+          const filenameSpan = document.createElement("span")
+          filenameSpan.textContent = song
 
-              // fileList.appendChild(li);
+          const delButton = document.createElement("button")
+          delButton.textContent = "X"
+          delButton.className = "delete-button"
+          delButton.onclick = () => deleteSong(song)
 
-              const li = document.createElement('li');
-              li.style.display = 'flex';
-              li.style.alignItems = 'center';
+          li.appendChild(filenameSpan) // then filename
+          li.appendChild(delButton) // Button first (left-justified)
 
-              const filenameSpan = document.createElement('span');
-              filenameSpan.textContent = song;
-
-              const delButton = document.createElement('button');
-              delButton.textContent = 'X';
-              delButton.className = 'delete-button';
-              delButton.onclick = () => deleteSong(song);
-
-              li.appendChild(filenameSpan);   // then filename
-              li.appendChild(delButton);      // Button first (left-justified)
-              
-
-              fileList.appendChild(li);
-          });
+          fileList.appendChild(li)
+        })
       }
-  })
-  .catch(error => console.error('Error:', error));
+    })
+    .catch((error) => console.error("Error:", error))
 }

@@ -1,0 +1,1 @@
+{"ssid": "name", "password": "pass"}
