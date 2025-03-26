@@ -224,9 +224,15 @@ button:hover {
   padding: 8px;
   margin-bottom: 8px;
   font-weight: bold;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
+  border: 0.15rem solid #ccc;      
+  border-radius: 6px;     
+  transition: background-color 0.2s ease;     
+}
+
+#fileList {
+  padding: 0;
+  margin: 0;
+  list-style: none;  /* removes default bullet points */
 }
 
 #fileList li:hover {

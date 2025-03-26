@@ -104,6 +104,18 @@ def get_songs():
         print(f"Error returning song names: {e}")
     return jsonify({"song_names": None})
 
+#Only for debug
+@app.route("/get_songs")
+@requires_auth
+def get_songs_and_songfiles():
+    try:
+        with env.begin() as txn:
+            with txn.cursor() as cursor:
+                all_songs = [{"key": key.decode('utf-8'), "val": val.decode('utf-8')} for key, val in cursor]
+        return jsonify({"songs": all_songs})
+    except Exception as e:
+        print(f"Error returning song : {e}")
+    return jsonify({"song_names": None})
 
 # Function to convert MP3 data from HTTP request to WAV
 def mp3_to_wav(file_storage, directory=SONG_FILES):
