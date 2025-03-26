@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Vault - Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>Settings</h1>
+            <a href="{{ url_for('logout') }}" class="logout-button">
+                <button type="button">Logout</button>
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+
+        <section class="section">
+            <h2>VM Configuration</h2>
+            <form id="vmForm">
+                <div class="form-group">
+                    <label for="vmUrl">VM URL</label>
+                    <input type="text" id="vmUrl" placeholder="Enter VM URL" required>
+                    <button type="submit">Save Configuration</button>
+                </div>
+                <div id="vmStatus" class="status"></div>
+            </form>
+            <div id="currentVM"></div>
+        </section>
+
+        <section class="section">
+            <h2>WiFi Configuration</h2>
+            <form id="wifiForm">
+                <div class="form-group">
+                    <label for="ssid">WiFi Network Name (SSID)</label>
+                    <input type="text" id="ssid" name="ssid" placeholder="Enter WiFi name" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">WiFi Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter WiFi password" required>
+                </div>
+                <button type="submit">Save WiFi Settings</button>
+                <div id="wifiStatus" class="status"></div>
+            </form>
+            <div id="currentWiFi" class="current-config"></div>
+        </section>
+
+        <section class="section">
+            <h2>Wake Word Settings</h2>
+            <form id="wakeWordForm">
+                <div class="form-group">
+                    <label for="wakeWord">Enter Wake Word</label>
+                    <input type="text" id="wakeWord" name="wakeWord" placeholder="Enter your preferred wake word"
+                        required>
+                    <p class="help-text">Type the phrase you want to use to wake up your Voice Vault assistant</p>
+                </div>
+                <button type="submit">Save Wake Word</button>
+                <div id="wakeWordStatus" class="status"></div>
+            </form>
+            <div id="currentWakeWord" class="current-config"></div>
+        </section>
+    </div>
+</body>
+
+</html>

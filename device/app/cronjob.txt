@@ -1,0 +1,8 @@
+// COPY THE BELOW INTO 'crontab -e' -> select nano editor
+
+@reboot cd /path/to/your/flask/app && nohup python3 app.py > flask.log 2>&1 &
+@reboot cd /path/to/your/device/script && nohup python3 device-app.py > device.log 2>&1 &
+
+// then do CTRL+X -> Y -> ENTER
+// then do 'sudo reboot' to try it out
+// 'ps aux | grep python' to check if it's running
