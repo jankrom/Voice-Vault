@@ -193,14 +193,16 @@ def cancel_alarm():
     speak("Alarm cancelled")
 
 def handle_alarm(alarm_metadata):
-    if alarm_metadata.type == "Create":
-        # create_alarm(int(alarm_metadata.time))
-        pass
-    elif alarm_metadata.type == "Cancel":
-        # cancel_alarm()
-        pass
+    if alarm_metadata == "Cancel":
+        cancel_alarm()
     else:
-        speak("An error occured trying to handle your timer")
+        try:
+            alarm_metadata = alarm_metadata.split(":")
+            formatted_alarm_metadata = alarm_metadata[0] + alarm_metadata[1]
+            create_alarm(int(formatted_alarm_metadata))
+        except Exception as e:
+            speak("Error creating your alarm")
+
 
 def play_song(song_name, song_file):
     global music_player
