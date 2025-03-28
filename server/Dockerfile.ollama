@@ -1,0 +1,8 @@
+FROM ollama/ollama:latest
+
+# Copy the script and set correct permissions
+COPY ./start-ollama.sh /start-ollama.sh
+RUN chmod +x /start-ollama.sh
+
+# Use shell form to execute the script
+ENTRYPOINT ["/start-ollama.sh"]
