@@ -73,11 +73,11 @@ def format_query(text):
 #Querying model
 #TODO: Change this from dummy data to actually query the model    
 def query_model(query):
-    params = {
+    data = {
         "message": format_query(query)
     
     }
-    response = requests.get(MODEL_ADDR, params=params)
+    response = requests.get(MODEL_ADDR, json=data)
     if response.status_code == 200:
         # Convert response to JSON
         data = response.json()
