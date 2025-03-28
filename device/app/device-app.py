@@ -35,8 +35,7 @@ API_KEY = os.getenv("API_KEY")
 #Str constants
 FOUND_KEYWORD_STR_ARRAY = ["Hi what can I help you with?", "Hey, whats up?", "What can I help you with?"]
 MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
-with open("system-prompt.txt", 'r') as file:
-    SYSTEM_PROMPT = file.read()
+
 
 #Variable for controlling mic capture
 listen_enabled = True
@@ -64,12 +63,18 @@ def audio_callback(indata, frames, time, status):
     if listen_enabled:
         q.put(bytes(indata)) 
 
+def format_query(text):
+    with env.begin() as txn:
+        with txn.cursor() as cursor:
+            all_song_names = [key.decode("utf-8") for key in cursor.iternext(keys=True, values=False)]
+            query = f"['{text}', {all_song_names}]"
+            return query
+
 #Querying model
 #TODO: Change this from dummy data to actually query the model    
 def query_model(query):
     params = {
-        "userId": 1,
-        "api_key": API_KEY
+        "message": format_query(query)
     
     }
     response = requests.get(MODEL_ADDR, params=params)
@@ -78,15 +83,10 @@ def query_model(query):
         data = response.json()
         if data:
             # return list(data.keys())[0]
-            return {"type":"Music", "data": "mime"}
+            # return {"type":"Music", "data": "mime"}
+            return data
     else:
-        return '{"type": "Error", "data": "Error connecting to server"}'
-
-#formatting query + adding system prompt
-def format_query(raw_query):
-    query = SYSTEM_PROMPT + f"The approximate datetime is {datetime.now()} use this approximation if the user asks for the time \n ----End System Prompt---- \n ['{raw_query}', []]"
-    
-    return query
+        return {"type":"Error", "data": "Network errort"}
 
 def make_audio_file(query_response, output_filename="output.wav"):
     cmd = f"echo '{query_response}' | piper \
@@ -286,7 +286,7 @@ def main():
                 else:
                     if text:
                         print(f"Heard query: {text}")
-                        query_response = query_model(format_query(text))
+                        query_response = query_model(text)
                         print(query_response)
                         extract_answer(query_response)
                         keyword_detected = False

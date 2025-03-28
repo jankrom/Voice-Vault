@@ -15,6 +15,9 @@ os.environ["OLLAMA_HOST"] = OLLAMA_HOST
 # Get model tag from environment variable
 MODEL_TAG = os.getenv("MODEL")
 
+# Open a file in read mode
+with open('example.txt', 'r') as file:
+    SYSTEM_PROMPT = file.read()
 
 # Endpoint to receive requests, format them, and send them to the server
 @app.route("/interact", methods=["POST"])
@@ -32,6 +35,10 @@ def predict(query):
     response: ChatResponse = chat(
         model=MODEL_TAG,
         messages=[
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+            },
             {
                 "role": "user",
                 "content": query,
