@@ -11,6 +11,7 @@ services:
     environment:
       - OLLAMA_HOST=http://ollama:11434
       - MODEL=${MODEL}
+      - PASSWORD=${PASSWORD}
     networks:
       - ai-network
 

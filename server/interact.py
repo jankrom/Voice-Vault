@@ -14,7 +14,7 @@ os.environ["OLLAMA_HOST"] = OLLAMA_HOST
 
 # Get model tag from environment variable
 MODEL_TAG = os.getenv("MODEL")
-
+PASSWORD = os.getenv("PASSWORD")
 # Open a file in read mode
 with open('system-prompt.txt', 'r') as file:
     SYSTEM_PROMPT = file.read()
@@ -24,6 +24,10 @@ with open('system-prompt.txt', 'r') as file:
 def interact():
     # Extract the incoming request data
     incoming_data = request.get_json()
+
+    password = incoming_data.get("password")
+    if password != PASSWORD:
+        return jsonify({"error": "Invalid password"}), 401
 
     message = incoming_data.get("message", "")
     response = predict(message)
