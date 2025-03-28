@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.flask
     image: jankrom1/voice-vault-flask:${MODEL_TAG_DOCKER}
     ports:
-      - "6000:6000"
+      - "80:6000"
     depends_on:
       - ollama
     environment:
