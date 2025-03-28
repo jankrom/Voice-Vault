@@ -81,9 +81,11 @@ def query_model(query):
     if response.status_code == 200:
         # Convert response to JSON
         data = response.json()
+        data = json.loads(data)
         if data:
             # return list(data.keys())[0]
             # return {"type":"Music", "data": "mime"}
+            data["data"] = data["data"].replace("'", "")
             return data
     else:
         return {"type":"Error", "data": "Network errort"}
@@ -94,9 +96,14 @@ def make_audio_file(query_response, output_filename="output.wav"):
         --output_file {output_filename}"
     os.system(cmd)
     
-def speak(query_response):    
+def speak(query_response):
+    global listen_enabled
+      
     cmd = f"espeak '{query_response}'"
+    
+    listen_enabled = False  
     os.system(cmd)
+    listen_enabled = True  
     
 #This function outputs audio using the speaker      
 def speak_real(query_response):
@@ -193,7 +200,7 @@ def cancel_alarm():
     speak("Alarm cancelled")
 
 def handle_alarm(alarm_metadata):
-    if alarm_metadata == "Cancel":
+    if alarm_metadata == "CANCEL":
         cancel_alarm()
     else:
         try:
