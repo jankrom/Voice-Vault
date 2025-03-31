@@ -14,9 +14,15 @@ import requests
 import sounddevice as sd
 from dotenv import load_dotenv
 from vosk import KaldiRecognizer, Model
+from autoreload import ConfigReloader as cr
 
 #Loading env file
 load_dotenv()
+
+CONFIG_PATH = "../config.ini"
+reloader = cr(CONFIG_PATH, reload_interval=5)
+# print(reloader.get("default", "wake_word", "hello assistant"))
+# print(reloader.get("default", "model_addr"))
 
 #Opening song db in readonly mode
 env = lmdb.open('../website/song_db', readonly=True, lock=False)
@@ -27,15 +33,9 @@ SONG_PATH = "../website/song_db/"
 #Path to directory holding song files
 SONG_FILE_PATH = "../website/songs/"
 
-#Getting envs
-KEYWORD = os.getenv("ACTIVATION_KEYWORD").lower()
-MODEL_ADDR = os.getenv("MODEL_ADDR")
-API_KEY = os.getenv("API_KEY")
-
 #Str constants
 FOUND_KEYWORD_STR_ARRAY = ["Hi what can I help you with?", "Hey, whats up?", "What can I help you with?"]
 MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
-
 
 #Variable for controlling mic capture
 listen_enabled = True
@@ -81,7 +81,7 @@ def query_model(query):
     
     }
     try:
-        response = requests.get(MODEL_ADDR, json=data)
+        response = requests.get(reloader.get("default", "model_addr"), json=data)
         if response.status_code == 200:
             # Convert response to JSON
             data = response.json()
@@ -293,7 +293,7 @@ def main():
 
                 if not keyword_detected:
                     
-                    if KEYWORD in text.lower():
+                    if reloader.get("default", "wake_word", "hello assistant").lower() in text.lower():
                         print("Keyword detected! Speak your query:")
                         speak(random.choice(FOUND_KEYWORD_STR_ARRAY))
                         
