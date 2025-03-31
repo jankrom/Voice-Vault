@@ -73,22 +73,28 @@ def format_query(text):
 #Querying model
 #TODO: Change this from dummy data to actually query the model    
 def query_model(query):
+    file = open('../password.txt', 'r')
+    password = file.read()
     data = {
-        "message": format_query(query)
+        "message": format_query(query),
+        "password": password
     
     }
-    response = requests.get(MODEL_ADDR, json=data)
-    if response.status_code == 200:
-        # Convert response to JSON
-        data = response.json()
-        data = json.loads(data)
-        if data:
-            # return list(data.keys())[0]
-            # return {"type":"Music", "data": "mime"}
-            data["data"] = data["data"].replace("'", "")
-            return data
-    else:
-        return {"type":"Error", "data": "Network errort"}
+    try:
+        response = requests.get(MODEL_ADDR, json=data)
+        if response.status_code == 200:
+            # Convert response to JSON
+            data = response.json()
+            data = json.loads(data)
+            if data:
+                # return list(data.keys())[0]
+                # return {"type":"Music", "data": "mime"}
+                data["data"] = data["data"].replace("'", "")
+                return data
+        else:
+            return {"type":"Error", "data": "Network error"}
+    except Exception as e:
+        return {"type":"Error", "data": "Network error"}
 
 def make_audio_file(query_response, output_filename="output.wav"):
     cmd = f"echo '{query_response}' | piper \
