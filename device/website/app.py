@@ -7,10 +7,12 @@ from pydub import AudioSegment
 from io import BytesIO
 import random
 import json
+from configparser import ConfigParser
 
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+CONFIG_PATH = "../config.ini"
 VM_CONFIG_FILE = "vm_config.txt"
 PASSWORD_FILE = "../password.txt"
 
@@ -23,6 +25,8 @@ os.makedirs(SONG_FILES, exist_ok=True)
 WIFI_CONFIG_FILE = "wifi_config.txt"
 WAKE_WORD_CONFIG_FILE = "wake_word_config.txt"
 
+config = ConfigParser()
+config.read(CONFIG_PATH)
 
 def get_stored_password():
     try:
@@ -70,8 +74,9 @@ def save_vm_config():
     vm_url = data.get("vm_url")
 
     if vm_url:
-        with open(VM_CONFIG_FILE, "w") as f:
-            f.write(vm_url)
+        config["default"]["model_addr"] = vm_url
+        with open(CONFIG_PATH, "w") as f:
+            config.write(f)
         return jsonify({"success": True})
     return jsonify({"success": False}), 400
 
@@ -80,10 +85,7 @@ def save_vm_config():
 @requires_auth
 def get_vm_config():
     try:
-        if os.path.exists(VM_CONFIG_FILE):
-            with open(VM_CONFIG_FILE, "r") as f:
-                vm_url = f.read().strip()
-                return jsonify({"vm_url": vm_url})
+        return jsonify({"vm_url": config["default"]["model_addr"]})
     except Exception as e:
         print(f"Error reading VM config: {e}")
     return jsonify({"vm_url": None})
@@ -234,11 +236,11 @@ def save_wake_word():
     wake_word = data.get("wake_word")
 
     if wake_word:
-        config = {"wake_word": wake_word}
         try:
-            with open(WAKE_WORD_CONFIG_FILE, "w") as f:
-                json.dump(config, f)
-            return jsonify({"success": True})
+            config["default"]["wake_word"] = wake_word
+            with open(CONFIG_PATH, "w") as f:
+                    config.write(f)
+            return jsonify({"success": True})    
         except Exception as e:
             print(f"Error saving wake word config: {e}")
             return jsonify({"success": False, "error": str(e)}), 500
@@ -249,10 +251,7 @@ def save_wake_word():
 @requires_auth
 def get_wake_word():
     try:
-        if os.path.exists(WAKE_WORD_CONFIG_FILE):
-            with open(WAKE_WORD_CONFIG_FILE, "r") as f:
-                config = json.load(f)
-                return jsonify({"wake_word": config.get("wake_word")})
+        return jsonify({"wake_word": config["default"]["wake_word"]})
     except Exception as e:
         print(f"Error reading wake word config: {e}")
     return jsonify({"wake_word": "Hey Voice Vault"})
