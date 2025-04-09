@@ -16,6 +16,8 @@ from dotenv import load_dotenv
 from vosk import KaldiRecognizer, Model
 from autoreload import ConfigReloader as cr
 from piper import PiperVoice
+import httpx
+import asyncio
 
 #Loading env file
 load_dotenv()
@@ -77,29 +79,100 @@ def format_query(text):
 
 #Querying model
 #TODO: Change this from dummy data to actually query the model    
-def query_model(query):
-    file = open('../password.txt', 'r')
-    password = file.read()
-    data = {
-        "message": format_query(query),
-        "password": password
-    
-    }
+#Querying model
+async def query_model(query):
     try:
-        response = requests.get(reloader.get("default", "model_addr"), json=data)
-        if response.status_code == 200:
-            # Convert response to JSON
-            data = response.json()
-            data = json.loads(data)
-            if data:
-                # return list(data.keys())[0]
-                # return {"type":"Music", "data": "mime"}
-                data["data"] = data["data"].replace("'", "")
-                return data
-        else:
-            return {"type":"Error", "data": "Network error"}
+        file = open('../password.txt', 'r')
+        password = file.read()
+        data = {
+            "message": format_query(query),
+            "password": password
+        
+        }
+        buffer = ""
+        response_type = None
+        
+        async with httpx.AsyncClient(timeout=None) as client:
+            async with client.stream("POST", reloader.get("default", "model_addr"), json=data) as response:
+                
+                async def chunk_generator():
+                    nonlocal buffer, response_type
+                    async for chunk in response.aiter_text():
+                        buffer += chunk
+
+                        if response_type is None and '\n' in buffer:
+                            line, buffer = buffer.split('\n', 1)
+                            response_type = line.strip()
+                            print(f"\nDetected query type: {response_type}\n")
+                            if buffer:
+                                yield buffer
+                                buffer = ""
+                        elif response_type:
+                            if buffer:
+                                yield buffer
+                                buffer = ""
+                                
+                chunk_itr = chunk_generator()
+                
+                try:
+                    first_chunk = await chunk_itr.__anext__()
+                except StopAsyncIteration:
+                    first_chunk = ""
+                
+                await handle_response(response_type, chunk_itr, first_chunk)
     except Exception as e:
-        return {"type":"Error", "data": "Network error"}
+        print(e)
+
+async def handle_llm_stream(stream):
+    try:
+        async for chunk in stream:
+            speak(chunk)
+    except Exception as e:
+        print("this is the problem")
+        raise e
+        
+async def handle_music_stream(stream):
+    
+    data = ""
+    async for chunk in stream:
+        data += chunk
+    handle_music(data)
+    
+async def handle_alarm_stream(stream):
+    data = ""
+    async for chunk in stream:
+        data += chunk
+    handle_alarm(data)
+
+async def handle_response(response_type, chunk_itr, first_chunk):
+    
+    if response_type == "LLM":
+        try:
+            async def llm_stream():
+                if first_chunk:
+                    yield first_chunk
+                async for chunk in chunk_itr:
+                    yield chunk
+            await handle_llm_stream(llm_stream())  
+        except Exception as e:
+            print("error is here")
+            raise e    
+    elif response_type == "Alarm":
+        async def alarm_stream():
+            if first_chunk:
+                yield first_chunk
+            async for chunk in chunk_itr:
+                yield chunk
+        await handle_alarm_stream(alarm_stream())
+    elif response_type == "Music":
+        async def music_stream():
+            if first_chunk:
+                yield first_chunk
+            async for chunk in chunk_itr:
+                yield chunk
+        await handle_music_stream(music_stream())
+    else:
+        print("Unknown response type:", response_type)
 
 def make_audio_file(query_response, output_filename="output.wav"):
     cmd = f"echo '{query_response}' | piper \
@@ -291,22 +364,9 @@ def handle_music(music_metadata):
                         that it was properly uploaded.")
             else:
                 speak("Song not found")
-                
-def extract_answer(response):
-        
-    try:
-        if response["type"] == "LLM":
-            speak(response["data"])
-        elif response["type"] == "Alarm":
-            handle_alarm(response["data"])
-        elif response["type"] == "Music":
-            handle_music(response["data"])
-            
-    except KeyError as e:
-        speak(f"An error occured processing your request. : {e}")
         
 
-def main():
+async def main():
     # Open audio input stream
     with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype="int16",
                         channels=1, callback=audio_callback):
@@ -330,16 +390,14 @@ def main():
                 else:
                     if text:
                         print(f"Heard query: {text}")
-                        query_response = query_model(text)
-                        print(query_response)
-                        extract_answer(query_response)
+                        await query_model(text)
                         keyword_detected = False
                         print("Listening for keyword...")
     
 
 if __name__ == '__main__':
     try:
-        main()
+       asyncio.run(main()) 
     except KeyboardInterrupt:
         print("\nProgram terminated by user.")
     
