@@ -33,7 +33,7 @@ def interact():
 
 
 def predict(query):
-    streamm = chat(
+    stream = chat(
         model=MODEL_TAG,
         messages=[
             {"role": "assistant", "content": SYSTEM_PROMPT},
@@ -41,8 +41,24 @@ def predict(query):
         ],
         stream=True
     )
-    for chunk in streamm:
-        yield chunk["message"]["content"]
+    
+    buffer = ""
+    type_detected = False
+    response_type = None
+    
+    for chunk in stream:
+        chunk_text =  chunk["message"]["content"]
+        buffer += chunk_text
+        
+        while not type_detected and '\n' in buffer:
+            line, buffer = buffer.split('\n', 1)
+            query_type = line.strip()
+            type_detected = True
+            yield f"{query_type}\n"
+        
+        if type_detected:
+                yield buffer
+                buffer = ""
 
 
 if __name__ == "__main__":
