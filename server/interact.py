@@ -1,5 +1,5 @@
 from ollama import chat, ChatResponse
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, stream_with_context, Response
 import os
 
 
@@ -16,13 +16,12 @@ os.environ["OLLAMA_HOST"] = OLLAMA_HOST
 MODEL_TAG = os.getenv("MODEL")
 PASSWORD = os.getenv("PASSWORD")
 # Open a file in read mode
-with open('system-prompt.txt', 'r') as file:
+with open('server/system-prompt.txt', 'r') as file:
     SYSTEM_PROMPT = file.read()
 
 # Endpoint to receive requests, format them, and send them to the server
-@app.route("/interact", methods=["GET"])
+@app.route("/interact", methods=["POST"])
 def interact():
-    # Extract the incoming request data
     incoming_data = request.get_json()
 
     password = incoming_data.get("password")
@@ -30,26 +29,20 @@ def interact():
         return jsonify({"error": "Invalid password"}), 401
 
     message = incoming_data.get("message", "")
-    response = predict(message)
-    print(response)
-    return jsonify(response)
+    return Response(stream_with_context(predict(message)), mimetype='text/plain')
 
 
 def predict(query):
-    response: ChatResponse = chat(
+    streamm = chat(
         model=MODEL_TAG,
         messages=[
-            {
-                "role": "assistant",
-                "content": SYSTEM_PROMPT
-            },
-            {
-                "role": "user",
-                "content": query,
-            },
+            {"role": "assistant", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": query},
         ],
+        stream=True
     )
-    return response.message.content
+    for chunk in streamm:
+        yield chunk["message"]["content"]
 
 
 if __name__ == "__main__":
