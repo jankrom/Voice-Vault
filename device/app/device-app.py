@@ -209,7 +209,7 @@ def speak(query_response):
         stream.write(chunk)
         
     #Short sleep so mic/speaker don't overlap
-    time.sleep(0.1)
+    time.sleep(0.2)
     
     listen_enabled = True
     
