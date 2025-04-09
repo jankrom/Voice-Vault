@@ -14,9 +14,15 @@ import requests
 import sounddevice as sd
 from dotenv import load_dotenv
 from vosk import KaldiRecognizer, Model
+from autoreload import ConfigReloader as cr
 
 #Loading env file
 load_dotenv()
+
+CONFIG_PATH = "../config.ini"
+reloader = cr(CONFIG_PATH, reload_interval=5)
+# print(reloader.get("default", "wake_word", "hello assistant"))
+# print(reloader.get("default", "model_addr"))
 
 #Opening song db in readonly mode
 env = lmdb.open('../website/song_db', readonly=True, lock=False)
@@ -27,15 +33,9 @@ SONG_PATH = "../website/song_db/"
 #Path to directory holding song files
 SONG_FILE_PATH = "../website/songs/"
 
-#Getting envs
-KEYWORD = os.getenv("ACTIVATION_KEYWORD").lower()
-MODEL_ADDR = os.getenv("MODEL_ADDR")
-API_KEY = os.getenv("API_KEY")
-
 #Str constants
 FOUND_KEYWORD_STR_ARRAY = ["Hi what can I help you with?", "Hey, whats up?", "What can I help you with?"]
 MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
-
 
 #Variable for controlling mic capture
 listen_enabled = True
@@ -73,20 +73,28 @@ def format_query(text):
 #Querying model
 #TODO: Change this from dummy data to actually query the model    
 def query_model(query):
-    params = {
-        "message": format_query(query)
+    file = open('../password.txt', 'r')
+    password = file.read()
+    data = {
+        "message": format_query(query),
+        "password": password
     
     }
-    response = requests.get(MODEL_ADDR, params=params)
-    if response.status_code == 200:
-        # Convert response to JSON
-        data = response.json()
-        if data:
-            # return list(data.keys())[0]
-            # return {"type":"Music", "data": "mime"}
-            return data
-    else:
-        return {"type":"Error", "data": "Network errort"}
+    try:
+        response = requests.get(reloader.get("default", "model_addr"), json=data)
+        if response.status_code == 200:
+            # Convert response to JSON
+            data = response.json()
+            data = json.loads(data)
+            if data:
+                # return list(data.keys())[0]
+                # return {"type":"Music", "data": "mime"}
+                data["data"] = data["data"].replace("'", "")
+                return data
+        else:
+            return {"type":"Error", "data": "Network error"}
+    except Exception as e:
+        return {"type":"Error", "data": "Network error"}
 
 def make_audio_file(query_response, output_filename="output.wav"):
     cmd = f"echo '{query_response}' | piper \
@@ -94,9 +102,14 @@ def make_audio_file(query_response, output_filename="output.wav"):
         --output_file {output_filename}"
     os.system(cmd)
     
-def speak(query_response):    
+def speak(query_response):
+    global listen_enabled
+      
     cmd = f"espeak '{query_response}'"
+    
+    listen_enabled = False  
     os.system(cmd)
+    listen_enabled = True  
     
 #This function outputs audio using the speaker      
 def speak_real(query_response):
@@ -193,14 +206,16 @@ def cancel_alarm():
     speak("Alarm cancelled")
 
 def handle_alarm(alarm_metadata):
-    if alarm_metadata.type == "Create":
-        # create_alarm(int(alarm_metadata.time))
-        pass
-    elif alarm_metadata.type == "Cancel":
-        # cancel_alarm()
-        pass
+    if alarm_metadata == "CANCEL":
+        cancel_alarm()
     else:
-        speak("An error occured trying to handle your timer")
+        try:
+            alarm_metadata = alarm_metadata.split(":")
+            formatted_alarm_metadata = alarm_metadata[0] + alarm_metadata[1]
+            create_alarm(int(formatted_alarm_metadata))
+        except Exception as e:
+            speak("Error creating your alarm")
+
 
 def play_song(song_name, song_file):
     global music_player
@@ -278,7 +293,7 @@ def main():
 
                 if not keyword_detected:
                     
-                    if KEYWORD in text.lower():
+                    if reloader.get("default", "wake_word", "hello assistant").lower() in text.lower():
                         print("Keyword detected! Speak your query:")
                         speak(random.choice(FOUND_KEYWORD_STR_ARRAY))
                         

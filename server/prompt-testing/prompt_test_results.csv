@@ -1,0 +1,188 @@
+prompt,category,input,expected,actual,is_correct
+Final Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': 'Test'}",True
+Final Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': 'STOP'}",True
+Final Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'PAUSE'}",True
+Final Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'UNPAUSE'}",True
+Final Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': '10:30'}",True
+Final Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': '19:00'}",True
+Final Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '08:00'}",True
+Final Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'CANCEL'}",True
+Final Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Did you know that the song 'Shape of You' by Ed Sheeran is one of the best-selling singles of all time? It's a catchy tune, isn't it?""}",True
+Final Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Here's one: Why don't scientists trust atoms? Because they make up everything! Hope that brought a smile to your face!""}",True
+Final Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'LLM', 'data': ""I'm not sure what your current location is, but I can provide you with a general answer. The correct response would require more context or information about your time zone.""}",True
+Almost Complete,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': 'Test'}",True
+Almost Complete,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': 'STOP'}",True
+Almost Complete,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'STOP'}",False
+Almost Complete,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'UNPAUSE'}",True
+Almost Complete,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': '10:30'}",True
+Almost Complete,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': '19:00'}",True
+Almost Complete,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '08:00'}",True
+Almost Complete,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'CANCEL'}",True
+Almost Complete,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Did you know that the song with the most weeks at number one on the US Billboard Hot 100 chart is 'Old Town Road' by Lil Nas X feat. Billy Ray Cyrus? It spent a record-breaking 19 weeks at the top in 2019.""}",True
+Almost Complete,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Here's one: Why don't scientists trust atoms? Because they make up everything! Hope that brought a smile to your face!""}",True
+Almost Complete,LLM,What time is it?,{'type': 'LLM'},"{'type': 'LLM', 'data': ""The current time is not provided as that information is not available to me. However, I can suggest ways for you to find out the current time. You can check your phone or computer's clock, ask someone nearby, or look it up online.""}",True
+Partially Complete,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': 'Test'}",True
+Partially Complete,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': 'STOP'}",True
+Partially Complete,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'STOP'}",False
+Partially Complete,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'STOP'}",False
+Partially Complete,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': '10:30'}",True
+Partially Complete,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': '19:00'}",True
+Partially Complete,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '08:00'}",True
+Partially Complete,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'CANCEL'}",True
+Partially Complete,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Did you know that 'Shape of You' by Ed Sheeran is one of the most streamed songs on Spotify? In fact, it has over 7 billion streams! That's a lot of people grooving to its catchy beat!""}",True
+Partially Complete,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'LLM', 'data': 'Why did the scarecrow win an award? Because he was outstanding in his field!'}",True
+Partially Complete,LLM,What time is it?,{'type': 'LLM'},"{'type': 'LLM', 'data': ""I'm happy to help you with that! However, I'm a helpful AI assistant, not a physical clock. I don't have access to real-time information about the current time. But if you'd like, I can provide you with some general information or answer any other questions you may have!""}",True
+Barely Complete,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': 'Test'}",True
+Barely Complete,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': 'Shape of You'}",False
+Barely Complete,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'Shape of You'}",False
+Barely Complete,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'Shape of You'}",False
+Barely Complete,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': '10:30'}",True
+Barely Complete,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': '19:00'}",True
+Barely Complete,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '08:00'}",True
+Barely Complete,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'cancel'}",False
+Barely Complete,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Did you know that the song 'Shape of You' by Ed Sheeran holds the record for being the most-streamed song on Spotify? It's a fun fact!""}",True
+Barely Complete,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Here's one: Why don't scientists trust atoms? Because they make up everything! Hope that made you smile!""}",True
+Barely Complete,LLM,What time is it?,{'type': 'LLM'},"{'type': 'LLM', 'data': ""I'm happy to help! However, I don't have access to real-time information about the current time. Could you please clarify or provide more context?""}",True
+Privacy Focused,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': 'Test'}",True
+Privacy Focused,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': 'stop'}",False
+Privacy Focused,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'Stop'}",False
+Privacy Focused,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'Resume'}",False
+Privacy Focused,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': '10:30'}",True
+Privacy Focused,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': '19:00'}",True
+Privacy Focused,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '08:00'}",True
+Privacy Focused,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': ''}",False
+Privacy Focused,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'LLM', 'data': ""I'm happy to chat with you, but I don't have any sensitive information or personal stories to share. Instead, I can provide some fun facts! Did you know that the songwriting process for 'Shape of You' by Ed Sheeran involved writing lyrics in a hotel room and then recording it in just one take? Or that 'Rolling in the Deep' by Adele was inspired by her own experiences with heartbreak?""}",True
+Privacy Focused,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'LLM', 'data': ""I'm happy to help with non-music requests, but as a privacy-oriented AI Assistant, I must decline sharing jokes or sensitive content. How about a fact instead?""}",True
+Privacy Focused,LLM,What time is it?,{'type': 'LLM'},"{'type': 'LLM', 'data': ""I don't have information about the current time. I can only provide general knowledge-based responses.""}",True
+Technical Detailed,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': 'Test'}",True
+Technical Detailed,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': 'STOP'}",True
+Technical Detailed,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'PAUSE'}",True
+Technical Detailed,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'UNPAUSE'}",True
+Technical Detailed,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': '10:30'}",True
+Technical Detailed,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': '19:00'}",True
+Technical Detailed,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '08:00'}",True
+Technical Detailed,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'CANCEL'}",True
+Technical Detailed,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Did you know that the phrase 'shape of you' is a reference to the unique shape of every person's body? It's a clever play on words by Ed Sheeran, the British singer-songwriter who wrote and recorded this hit song!""}",True
+Technical Detailed,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'LLM', 'data': ""Here's one: Why don't scientists trust atoms? Because they make up everything! I hope that brought a smile to your face.""}",True
+Technical Detailed,LLM,What time is it?,{'type': 'LLM'},"{'type': 'LLM', 'data': ""I don't have access to real-time clock data. Please check a local clock or device for current time.""}",True
+Conversational,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': ""Yay! I've got just the right vibe for you. Playing 'Test' now!""}",False
+Conversational,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': ""Alright, no more tunes for now! I'll stop playing the songs on your list. Thanks for letting me know what you're feeling.""}",False
+Conversational,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'Pausing Shape of You. Enjoy the rest of your day!'}",False
+Conversational,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': ""Awesome choice! Let's get this party started with some 'Shape of You' by Ed Sheeran, followed by 'Rolling in the Deep' by Adele and then we'll wrap it up with 'Test' by The Bad Seeds. Unpausing the music for you now!""}",False
+Conversational,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': ""I've set an alarm reminder for 10:30 AM. Don't worry, I'll make sure you're on time and feeling fresh!""}",False
+Conversational,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': ""I've set your alarm for 7:00 pm! Don't worry, you'll be woken up just in time to get ready for whatever comes next. By the way, I saw some great tunes in your music request list - 'Shape of You', 'Rolling in the Deep', and 'Test' are all fantastic choices!""}",False
+Conversational,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': ""I've set your alarm for 8:00 AM, nice and bright to start your day!""}",False
+Conversational,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'Your alarm has been cancelled. No more wake-up calls for you!'}",False
+Conversational,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'General', 'data': ""I'd be happy to share some fun facts with you! Did you know that the song 'Shape of You' by Ed Sheeran was a huge hit globally? It's a great example of how music can bring people together. If you're feeling adventurous, I can even recommend some songs from our collection that you might enjoy!""}",False
+Conversational,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'Response', 'data': 'Why did the computer go to therapy? Because it had a little glitch! I hope that made you smile!'}",False
+Conversational,LLM,What time is it?,{'type': 'LLM'},"{'type': 'General', 'data': ""Good morning! I'm not designed to provide current time information, but I can help you with any other questions or topics you'd like to discuss. By the way, it looks like you've got a great music taste going on - Shape of You and Rolling in the Deep are both amazing tracks!""}",False
+Contextual,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': 'Test'}",True
+Contextual,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': 'STOP'}",True
+Contextual,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': 'STOP'}",False
+Contextual,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'UNPAUSE'}",True
+Contextual,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': '10:30'}",True
+Contextual,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': '19:00'}",True
+Contextual,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '08:00'}",True
+Contextual,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'CANCEL'}",True
+Contextual,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'LLM', 'data': 'Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.'}",True
+Contextual,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'LLM', 'data': 'Why did the computer go to therapy? Because it had a little glitch! Hope that made you laugh!'}",True
+Contextual,LLM,What time is it?,{'type': 'LLM'},"{'type': 'General Query', 'data': ""The current time is not specified. To know the current time, please use a specific format like 'What's the time?' or 'What time is it?'""}",False
+Simple Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'music', 'data': 'Playing Test'}",False
+Simple Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'music', 'data': 'stop'}",False
+Simple Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': 'pause'}",False
+Simple Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'music', 'data': 'unpaused'}",False
+Simple Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': 'Set alarm for 10:30am'}",False
+Simple Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 7:00 pm'}",False
+Simple Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': 'Alarm set for 8:00'}",False
+Simple Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'cancelled'}",False
+Simple Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'General', 'data': ""Did you know that Ed Sheeran's song 'Shape of You' is one of the most streamed songs on Spotify? It's a great track to get moving and grooving!""}",False
+Simple Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'General', 'data': 'Why did the musician bring a ladder to the concert? Because she wanted to take her music to a whole new level!'}",False
+Simple Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'General', 'data': ""I'm just an AI, I don't have a clock to tell you what time it is. However, I can play some music for you! Which one would you like? Shape of You, Rolling in the Deep, or Test""}",False
+Detailed Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'music', 'data': ""Playing 'Test'""}",False
+Detailed Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'music', 'data': 'stopped'}",False
+Detailed Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': 'paused'}",False
+Detailed Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'music', 'data': 'unpaused'}",False
+Detailed Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm Management', 'data': 'Alarm set for 10:30 AM. Please confirm or cancel with respective commands.'}",False
+Detailed Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 7:00pm. Please confirm to cancel.'}",False
+Detailed Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm Management', 'data': 'Alarm set for 08:00'}",False
+Detailed Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm Management', 'data': 'Alarm cancelled successfully.'}",False
+Detailed Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'General Queries', 'data': ""I'm happy to chat with you! Did you know that the most popular musical genre in 2020 was hip-hop?""}",False
+Detailed Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'General Queries', 'data': ""Here's one: Why did the computer go to the doctor? It had a virus! Hope that made you smile!""}",False
+Detailed Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'General', 'data': ""I'm happy to help! However, I'm an AI assistant for Voice Vault, not a traditional clock. But if you'd like to set an alarm or play some music, I can certainly assist with that.""}",False
+Structured Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'music', 'data': None}",False
+Structured Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': ['Hello', 'Stop', ""Don't stop""]}",False
+Structured Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'Music', 'data': ""Pausing 'Shape of You'""}",False
+Structured Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'music', 'data': 'Resuming music'}",False
+Structured Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Invalid Request', 'data': 'This AI assistant is designed to process music-related queries only. Your request does not meet the required format.'}",False
+Structured Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Error', 'data': 'Invalid request. This AI Assistant does not support setting alarms or scheduling tasks.'}",False
+Structured Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'alarm', 'data': 'Set alarm for 08:00'}",False
+Structured Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Response', 'data': ""I've cancelled your alarm.""}",False
+Structured Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'General', 'data': ""Did you know that the song 'Shape of You' by Ed Sheeran holds the record for most weeks at number one on the UK Singles Chart, with a total of 14 weeks?""}",False
+Structured Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'Text', 'data': 'Why did the scarecrow win an award? Because he was outstanding in his field!'}",False
+Structured Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'Error', 'data': ""Invalid request. The prompt 'What time is it?' does not match any defined categories, and there are no specific music-related queries.""}",False
+Minimal Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': ['Test']}",False
+Minimal Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'music', 'data': ""Stoppin' you, Shape of You""}",False
+Minimal Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': ""Pausing 'Shape of You'...""}",False
+Minimal Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'music', 'data': None}",False
+Minimal Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Invalid Request', 'data': 'Unsupported request type. Please use a music query.'}",False
+Minimal Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 7:00pm'}",False
+Minimal Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': {'time': '08:00'}}",False
+Minimal Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'response', 'data': 'Alarm cancelled.'}",False
+Minimal Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'text', 'data': ""Did you know that Ed Sheeran's song 'Shape of You' is the most-streamed track on Spotify with over 4.5 billion streams?""}",False
+Minimal Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'response', 'data': ""Here's one: Why did the scarecrow win an award? Because he was outstanding in his field! And by the way, I see you're listening to some great tunes - Shape of You and Rolling in the Deep are both awesome!""}",False
+Minimal Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'Error', 'data': 'Invalid request. This AI assistant does not have the capability to provide current time information.'}",False
+Focused Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'music', 'data': None}",False
+Focused Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'stop', 'data': ''}",False
+Focused Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': 'Pausable track paused.'}",False
+Focused Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': ""Resuming playback. Enjoy 'Shape of You'.""}",False
+Focused Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'alarm', 'data': 'Alarm set for 10:30am'}",False
+Focused Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 7:00pm'}",False
+Focused Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': '8:00'}",False
+Focused Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'Cancelled'}",False
+Focused Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'General', 'data': ""Did you know that the song 'Shape of You' by Ed Sheeran holds the record for most weeks at number one on the UK Singles Chart, with 14 consecutive weeks? It's an interesting fact!""}",False
+Focused Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'General', 'data': ""Here's one: Why don't eggs tell jokes? Because they'd crack each other up!""}",False
+Focused Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'General Information', 'data': ""I'm not aware of your current location or timezone. However, I can suggest you check a clock or ask a virtual assistant for the exact time.""}",False
+Technical Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'music', 'data': []}",False
+Technical Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'stop', 'data': ''}",False
+Technical Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': 0}",False
+Technical Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'unpause', 'data': ''}",False
+Technical Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': 'Set for 10:30 AM'}",False
+Technical Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 19:00'}",False
+Technical Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': 'Scheduled for 08:00'}",False
+Technical Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Response', 'data': 'Alarm cancelled.'}",False
+Technical Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'Information', 'data': 'Did you know that music has been shown to improve memory, boost mood, and even reduce stress levels?'}",False
+Technical Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'response', 'data': ""Here's one: Why did the computer go to therapy? Because it had a virus!""}",False
+Technical Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'Information', 'data': 'The current time is unknown as this is a music-related query.'}",False
+Friendly Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'music', 'data': ""Playing 'Test'""}",False
+Friendly Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'Music', 'data': ""Alright, I'll stop playing 'Shape of You' and move on to the next song. Since you requested a random selection from your list, I'll play 'Rolling in the Deep' instead. Let me know if you'd like to change the playlist or set an alarm!""}",False
+Friendly Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': ""Pausing 'Shape of You' for you!""}",False
+Friendly Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Response', 'data': ""I've unpaided the music. Enjoy your tunes!""}",False
+Friendly Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': 'Your alarm is set for 10:30 am.'}",False
+Friendly Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 7:00pm'}",False
+Friendly Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': 'Alarm set for 8:00 AM.'}",False
+Friendly Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'Your alarm has been cancelled.'}",False
+Friendly Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'General', 'data': ""Did you know that the song 'Shape of You' by Ed Sheeran is one of the most popular songs of the 2010s? Its unique blend of pop, R&B, and hip-hop made it a massive hit!""}",False
+Friendly Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'General', 'data': 'Why did the singer bring a ladder to the concert? Because she wanted to hit the high notes! Hope that made you smile!'}",False
+Friendly Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'General', 'data': ""I'm happy to help you with that! However, I couldn't find any information related to time. Could you please clarify or ask a different question?""}",False
+Concise Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'music', 'data': 'Playing Test'}",False
+Concise Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'music', 'data': ''}",False
+Concise Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': 'Song paused'}",False
+Concise Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'Resuming music playback for Shape of You, Rolling in the Deep, and Test.'}",False
+Concise Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': 'Alarm set for 10:30 am'}",False
+Concise Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 7:00pm'}",False
+Concise Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'Alarm', 'data': 'Alarm set for 8:00'}",False
+Concise Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'Alarm cancelled'}",False
+Concise Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'General', 'data': ""Did you know that 'Shape of You' by Ed Sheeran has over 3.4 billion views on YouTube? It's one of the most viewed videos ever!""}",False
+Concise Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'text', 'data': 'Why did the musician bring a ladder to the gig? Because he wanted to take his sound to new heights!'}",False
+Concise Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'General', 'data': ""The current time is not available. I'm a music-focused AI, and I don't have access to real-time information.""}",False
+Comprehensive Prompt,Music,Play the song called Test,"{'type': 'Music', 'data': 'Test'}","{'type': 'Music', 'data': ""Playing 'Test'""}",False
+Comprehensive Prompt,Music,Stop the music,"{'type': 'Music', 'data': 'STOP'}","{'type': 'music', 'data': 'Stopping music'}",False
+Comprehensive Prompt,Music,Pause this song,"{'type': 'Music', 'data': 'PAUSE'}","{'type': 'music', 'data': 'Paused'}",False
+Comprehensive Prompt,Music,Unpause the music,"{'type': 'Music', 'data': 'UNPAUSE'}","{'type': 'Music', 'data': 'Unpaused.'}",False
+Comprehensive Prompt,Alarm,Set an alarm for 10:30am,"{'type': 'Alarm', 'data': '10:30'}","{'type': 'Alarm', 'data': 'Alarm set for 10:30 AM'}",False
+Comprehensive Prompt,Alarm,Set an alarm for 7:00pm,"{'type': 'Alarm', 'data': '19:00'}","{'type': 'Alarm', 'data': 'Alarm set for 19:00'}",False
+Comprehensive Prompt,Alarm,Set an alarm for 8:00,"{'type': 'Alarm', 'data': '08:00'}","{'type': 'alarm', 'data': 'Alarm set for 8:00'}",False
+Comprehensive Prompt,Alarm,Cancel my alarm,"{'type': 'Alarm', 'data': 'CANCEL'}","{'type': 'Alarm', 'data': 'Alarms cancelled.'}",False
+Comprehensive Prompt,LLM,Tell me something interesting,{'type': 'LLM'},"{'type': 'information', 'data': ""Did you know that the human brain is capable of processing music and speech simultaneously, while also having a strong emotional response to both? It's no wonder music can be such an effective way to boost mood and reduce stress!""}",False
+Comprehensive Prompt,LLM,Tell me a joke,{'type': 'LLM'},"{'type': 'Joke', 'data': 'Why did the scarecrow win an award? Because he was outstanding in his field!'}",False
+Comprehensive Prompt,LLM,What time is it?,{'type': 'LLM'},"{'type': 'Information', 'data': ""I'm not a clock, but I can tell you that I'm here to assist you! If you need help with anything else, feel free to ask.""}",False

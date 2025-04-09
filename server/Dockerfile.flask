@@ -6,5 +6,6 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY interact.py .
+COPY system-prompt.txt .
 
 CMD ["python", "interact.py"]

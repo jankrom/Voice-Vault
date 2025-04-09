@@ -14,16 +14,20 @@ os.environ["OLLAMA_HOST"] = OLLAMA_HOST
 
 # Get model tag from environment variable
 MODEL_TAG = os.getenv("MODEL")
-
+PASSWORD = os.getenv("PASSWORD")
 # Open a file in read mode
-with open('example.txt', 'r') as file:
+with open('system-prompt.txt', 'r') as file:
     SYSTEM_PROMPT = file.read()
 
 # Endpoint to receive requests, format them, and send them to the server
-@app.route("/interact", methods=["POST"])
+@app.route("/interact", methods=["GET"])
 def interact():
     # Extract the incoming request data
     incoming_data = request.get_json()
+
+    password = incoming_data.get("password")
+    if password != PASSWORD:
+        return jsonify({"error": "Invalid password"}), 401
 
     message = incoming_data.get("message", "")
     response = predict(message)
@@ -36,7 +40,7 @@ def predict(query):
         model=MODEL_TAG,
         messages=[
             {
-                "role": "system",
+                "role": "assistant",
                 "content": SYSTEM_PROMPT
             },
             {
