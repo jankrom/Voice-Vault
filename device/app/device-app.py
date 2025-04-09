@@ -15,7 +15,6 @@ import sounddevice as sd
 from dotenv import load_dotenv
 from vosk import KaldiRecognizer, Model
 from autoreload import ConfigReloader as cr
-import numpy as np
 from piper import PiperVoice
 
 #Loading env file
