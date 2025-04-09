@@ -16,7 +16,7 @@ os.environ["OLLAMA_HOST"] = OLLAMA_HOST
 MODEL_TAG = os.getenv("MODEL")
 PASSWORD = os.getenv("PASSWORD")
 # Open a file in read mode
-with open('server/system-prompt.txt', 'r') as file:
+with open('system-prompt.txt', 'r') as file:
     SYSTEM_PROMPT = file.read()
 
 # Endpoint to receive requests, format them, and send them to the server

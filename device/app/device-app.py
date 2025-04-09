@@ -124,12 +124,18 @@ async def query_model(query):
         print(e)
 
 async def handle_llm_stream(stream):
-    try:
-        async for chunk in stream:
-            speak(chunk)
-    except Exception as e:
-        print("this is the problem")
-        raise e
+    
+    buffer = ""
+    async for chunk in stream:
+        buffer += chunk
+        pause_idx = min(buffer.find("."), buffer.find(",")) if min(buffer.find("."), buffer.find(",")) != -1 else None
+            
+        if pause_idx:
+            out, buffer = buffer[:pause_idx], buffer[pause_idx:]
+            speak(out)
+            
+    speak(buffer)
+    
         
 async def handle_music_stream(stream):
     
@@ -147,16 +153,14 @@ async def handle_alarm_stream(stream):
 async def handle_response(response_type, chunk_itr, first_chunk):
     
     if response_type == "LLM":
-        try:
-            async def llm_stream():
-                if first_chunk:
-                    yield first_chunk
-                async for chunk in chunk_itr:
-                    yield chunk
-            await handle_llm_stream(llm_stream())  
-        except Exception as e:
-            print("error is here")
-            raise e    
+        
+        async def llm_stream():
+            if first_chunk:
+                yield first_chunk
+            async for chunk in chunk_itr:
+                yield chunk
+        await handle_llm_stream(llm_stream())  
+          
     elif response_type == "Alarm":
         async def alarm_stream():
             if first_chunk:
