@@ -15,6 +15,7 @@ import sounddevice as sd
 from dotenv import load_dotenv
 from vosk import KaldiRecognizer, Model
 from autoreload import ConfigReloader as cr
+from piper import PiperVoice
 
 #Loading env file
 load_dotenv()
@@ -42,6 +43,10 @@ listen_enabled = True
 
 #TTS Model
 tts_model = "lessac"
+
+# Piper model
+tts_model_path = "./tts-models/lessac/lessac.onnx"
+voice = PiperVoice.load(tts_model_path)
 
 #STT model intialization - Vosk
 model = Model("vosk-model")  
@@ -102,7 +107,7 @@ def make_audio_file(query_response, output_filename="output.wav"):
         --output_file {output_filename}"
     os.system(cmd)
     
-def speak(query_response):
+def speak_fake(query_response):
     global listen_enabled
       
     cmd = f"espeak '{query_response}'"
@@ -110,6 +115,30 @@ def speak(query_response):
     listen_enabled = False  
     os.system(cmd)
     listen_enabled = True  
+
+def speak(query_response):
+    
+    global listen_enabled
+    stream = p.open(
+        format=pyaudio.paInt16,
+        channels=1,
+        rate=voice.config.sample_rate,
+        output=True
+    )
+      
+    listen_enabled = False 
+    
+    for chunk in voice.synthesize_stream_raw(query_response):
+        stream.write(chunk)
+        
+    #Short sleep so mic/speaker don't overlap
+    time.sleep(0.1)
+    
+    listen_enabled = True
+    
+    stream.stop_stream()
+    stream.close()
+    
     
 #This function outputs audio using the speaker      
 def speak_real(query_response):
