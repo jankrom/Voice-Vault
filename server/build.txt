@@ -1,0 +1,24 @@
+MODEL="llama3" MODEL_TAG_DOCKER="llama3" docker-compose build
+MODEL="vicuna:7b" MODEL_TAG_DOCKER="vicuna-7b" docker-compose build
+MODEL="qwen2.5:7b" MODEL_TAG_DOCKER="qwen2.5-7b" docker-compose build
+MODEL="falcon:7b" MODEL_TAG_DOCKER="falcon-7b" docker-compose build
+
+docker push jankrom1/voice-vault-flask:qwen2.5-7b
+docker push jankrom1/voice-vault-flask:falcon-7b
+docker push jankrom1/voice-vault-flask:llama3
+docker push jankrom1/voice-vault-flask:vicuna-7b
+
+docker push jankrom1/voice-vault-ollama:qwen2.5-7b
+docker push jankrom1/voice-vault-ollama:falcon-7b
+docker push jankrom1/voice-vault-ollama:llama3
+docker push jankrom1/voice-vault-ollama:vicuna-7b
+
+docker pull jankrom1/voice-vault-flask:qwen2.5-7b
+docker pull jankrom1/voice-vault-flask:falcon-7b
+docker pull jankrom1/voice-vault-flask:llama3
+docker pull jankrom1/voice-vault-flask:vicuna-7b
+
+docker pull jankrom1/voice-vault-ollama:qwen2.5-7b
+docker pull jankrom1/voice-vault-ollama:falcon-7b
+docker pull jankrom1/voice-vault-ollama:llama3
+docker pull jankrom1/voice-vault-ollama:vicuna-7b

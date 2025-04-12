@@ -15,6 +15,11 @@ const ModelSetupDialog = ({
   selectedModel: OpenSourceModel | null
   setSelectedModel: (model: OpenSourceModel | null) => void
 }) => {
+  const handleDownloadCompose = (e: React.MouseEvent) => {
+    e.preventDefault()
+    window.location.href = "/docker-compose.yml"
+  }
+
   return (
     <Dialog
       open={selectedModel !== null}
@@ -32,20 +37,22 @@ const ModelSetupDialog = ({
         <div className="space-y-4">
           <div className="bg-gray-800/50 rounded-lg p-4">
             <h3 className="text-sm font-medium text-white mb-2">
-              Requirements:
-            </h3>
-            <p className="text-sm text-gray-400">
-              {selectedModel?.requirements}
-            </p>
-          </div>
-          <div className="bg-gray-800/50 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-white mb-2">
               Setup Instructions:
             </h3>
             <ol className="space-y-2">
               {selectedModel?.setupInstructions.map((instruction, index) => (
                 <li key={index} className="text-sm text-gray-400">
-                  {instruction}
+                  {instruction.startsWith("3.") ? (
+                    <a
+                      href="/docker-compose.yml"
+                      className="text-blue-400 hover:text-blue-300 underline"
+                      download
+                    >
+                      {instruction}
+                    </a>
+                  ) : (
+                    instruction
+                  )}
                 </li>
               ))}
             </ol>

@@ -31,9 +31,6 @@ const ModelsSection = ({
                 </h3>
                 <p className="text-sm text-gray-300">{model.description}</p>
               </div>
-              <div className="pt-4 border-t border-gray-700">
-                <p className="text-xs text-gray-400">{model.requirements}</p>
-              </div>
             </div>
           ))}
         </div>
@@ -46,65 +43,45 @@ export default ModelsSection
 
 const openSourceModels: OpenSourceModel[] = [
   {
-    name: "LocalLLaMA-7B",
-    description: "Efficient local language model optimized for CPU inference",
-    requirements: "Minimum 16GB RAM, 4 CPU cores",
-    setupInstructions: [
-      "1. Clone the LocalLLaMA repository",
-      "2. Install dependencies: pip install -r requirements.txt",
-      "3. Download model weights using: python download_weights.py",
-      "4. Run setup script: ./setup.sh",
-      "5. Start the model server: python serve.py",
-    ],
-  },
-  {
-    name: "OpenChat-3B",
-    description: "Lightweight conversational AI for real-time responses",
-    requirements: "Minimum 8GB RAM, 2 CPU cores",
-    setupInstructions: [
-      "1. Download OpenChat package",
-      "2. Run: pip install openchat-3b",
-      "3. Initialize model: openchat init",
-      "4. Configure environment variables",
-      "5. Launch server: openchat serve",
-    ],
-  },
-  {
-    name: "FastGPT-Local",
-    description: "High-performance local GPT model with minimal latency",
-    requirements: "Minimum 32GB RAM, 8 CPU cores, NVIDIA GPU recommended",
-    setupInstructions: [
-      "1. Install CUDA dependencies",
-      "2. Clone FastGPT repository",
-      "3. Run installation script: ./install.sh",
-      "4. Download model: fastgpt download",
-      "5. Start inference server: fastgpt start",
-    ],
-  },
-  {
-    name: "MiniLM-Edge",
+    name: "Qwen 2.5 7B",
     description:
-      "Edge-optimized language model for resource-constrained environments",
-    requirements: "Minimum 4GB RAM, 2 CPU cores",
+      "Qwen's latest 7B parameter model optimized for chat and reasoning",
     setupInstructions: [
-      "1. Get MiniLM package",
-      "2. Install using: pip install minilm-edge",
-      "3. Download compact model weights",
-      "4. Set up configuration file",
-      "5. Run: minilm serve --config config.yml",
+      "1. Pull Docker image: docker pull jankrom1/voice-vault-flask:qwen2.5-7b",
+      "2. Pull Docker image: docker pull jankrom1/voice-vault-ollama:qwen2.5-7b",
+      "3. Download docker-compose.yml and upload it to VM",
+      "4. Run: MODEL_TAG_DOCKER=qwen2.5-7b MODEL=qwen2.5:7b PASSWORD=default-password docker compose up",
     ],
   },
   {
-    name: "NeoX-Local",
-    description:
-      "Full-featured local language model with extensive customization",
-    requirements: "Minimum 64GB RAM, 12 CPU cores, NVIDIA GPU required",
+    name: "Falcon 7B",
+    description: "TII's open-source 7B parameter language model",
     setupInstructions: [
-      "1. Set up CUDA environment",
-      "2. Install NeoX dependencies",
-      "3. Clone and build from source",
-      "4. Download model weights (120GB)",
-      "5. Launch using: neox-serve --model large",
+      "1. Pull Docker image: docker pull jankrom1/voice-vault-flask:falcon-7b",
+      "2. Pull Docker image: docker pull jankrom1/voice-vault-ollama:falcon-7b",
+      "3. Download docker-compose.yml and upload it to VM",
+      "4. Run: MODEL_TAG_DOCKER=falcon-7b MODEL=falcon:7b PASSWORD=default-password docker compose up",
+    ],
+  },
+  {
+    name: "LLaMA 3",
+    description: "Meta's latest generation of open foundation language models",
+    setupInstructions: [
+      "1. Pull Docker image: docker pull jankrom1/voice-vault-flask:llama3",
+      "2. Pull Docker image: docker pull jankrom1/voice-vault-ollama:llama3",
+      "3. Download docker-compose.yml and upload it to VM",
+      "4. Run: MODEL_TAG_DOCKER=llama3 MODEL=llama3 PASSWORD=default-password docker compose up",
+    ],
+  },
+  {
+    name: "Vicuna 7B",
+    description:
+      "Fine-tuned LLaMA model optimized for chat and instruction following",
+    setupInstructions: [
+      "1. Pull Docker image: docker pull jankrom1/voice-vault-flask:vicuna-7b",
+      "2. Pull Docker image: docker pull jankrom1/voice-vault-ollama:vicuna-7b",
+      "3. Download docker-compose.yml and upload it to VM",
+      "4. Run: MODEL_TAG_DOCKER=vicuna-7b MODEL=vicuna:7b PASSWORD=default-password docker compose up",
     ],
   },
 ]
@@ -112,6 +89,5 @@ const openSourceModels: OpenSourceModel[] = [
 export interface OpenSourceModel {
   name: string
   description: string
-  requirements: string
   setupInstructions: string[]
 }
