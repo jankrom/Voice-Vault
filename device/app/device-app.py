@@ -92,7 +92,7 @@ async def query_model(query):
         buffer = ""
         response_type = None
         
-        async with httpx.AsyncClient(timeout=None) as client:
+        async with httpx.AsyncClient(timeout=None, verify=False) as client:
             async with client.stream("POST", reloader.get("default", "model_addr"), json=data) as response:
                 
                 async def chunk_generator():
@@ -176,7 +176,8 @@ async def handle_response(response_type, chunk_itr, first_chunk):
                 yield chunk
         await handle_music_stream(music_stream())
     else:
-        print("Unknown response type:", response_type)
+        # print("Unknown response type:", response_type)
+        speak("Error processing query")
 
 def make_audio_file(query_response, output_filename="output.wav"):
     cmd = f"echo '{query_response}' | piper \
@@ -200,7 +201,8 @@ def speak(query_response):
         format=pyaudio.paInt16,
         channels=1,
         rate=voice.config.sample_rate,
-        output=True
+        output=True,
+        frames_per_buffer=2048
     )
       
     listen_enabled = False 
