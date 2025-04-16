@@ -38,6 +38,10 @@ SONG_FILE_PATH = "../website/songs/"
 
 #Str constants
 FOUND_KEYWORD_STR_ARRAY = ["Hi what can I help you with?", "Hey, whats up?", "What can I help you with?"]
+
+FORMAL_FOUND_KEYWORD_STR_ARRAY = ["Hi what can I help you with?", "What can I help you with?", "How may I assist you today?"]
+INFORMAL_FOUND_KEYWORD_STR_ARRAY = ["Hey there, how can I help you?", "Hi! Need any help with something?", "Is there something I can help you with?"]
+
 MISSED_QUERY_STR = "I didn't quite get that. Can you repeat that?"
 
 #Variable for controlling mic capture
@@ -177,6 +181,12 @@ async def handle_response(response_type, chunk_itr, first_chunk):
         await handle_music_stream(music_stream())
     else:
         # print("Unknown response type:", response_type)
+        buff = ""
+        if first_chunk:
+            buff += first_chunk
+        async for chunk in chunk_itr:
+            buff += chunk
+        print(buff)
         speak("Error processing query")
 
 def make_audio_file(query_response, output_filename="output.wav"):
@@ -211,7 +221,7 @@ def speak(query_response):
         stream.write(chunk)
         
     #Short sleep so mic/speaker don't overlap
-    time.sleep(0.2)
+    time.sleep(0.25)
     
     listen_enabled = True
     
@@ -390,7 +400,7 @@ async def main():
                     
                     if reloader.get("default", "wake_word", "hello assistant").lower() in text.lower():
                         print("Keyword detected! Speak your query:")
-                        speak(random.choice(FOUND_KEYWORD_STR_ARRAY))
+                        speak(random.choice(FORMAL_FOUND_KEYWORD_STR_ARRAY if reloader.get("default", "speech_style", "formal") == "formal" else INFORMAL_FOUND_KEYWORD_STR_ARRAY))
                         
                         keyword_detected = True
                 else:

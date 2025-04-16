@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", function () {
   if (document.getElementById("fileList")) {
     loadFileList()
   }
+  if (document.getElementById("speechStyleForm")) {
+    fetchCurrentSpeechStyle()
+  }
 
   // Handle VM form submission
   const vmForm = document.getElementById("vmForm")
@@ -117,7 +120,59 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     })
   }
+
+  // Handle Speech Style form submission
+  const speechStyleForm = document.getElementById("speechStyleForm")
+  if (speechStyleForm) {
+    console.log("got here")
+    speechStyleForm.addEventListener("submit", async function (e) {
+      e.preventDefault()
+      const selectedStyle = document.querySelector('input[name="speechStyle"]:checked')?.value
+      
+
+      if (!selectedStyle) {
+        showStatus("Please select a speech style", "error", "speechStyleStatus")
+        return
+      }
+
+      try {
+        const response = await fetch("/save_speech_style", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ speech_style: selectedStyle }),
+        })
+
+        if (response.ok) {
+          showStatus("Speech style saved successfully!", "success", "speechStyleStatus")
+        } else {
+          const data = await response.json()
+          showStatus("Failed to save speech style: " + data.error, "error", "speechStyleStatus")
+        }
+      } catch (error) {
+        console.error("Error:", error)
+        showStatus("Error saving speech style", "error", "speechStyleStatus")
+      }
+    })
+  }
 })
+
+  
+
+  async function fetchCurrentSpeechStyle() {
+    try {
+      const response = await fetch("/get_speech_style")
+      const data = await response.json()
+      if (data.speech_style) {
+        const radio = document.querySelector(`input[name="speechStyle"][value="${data.speech_style}"]`)
+        if (radio) radio.checked = true
+      }
+    } catch (error) {
+      console.error("Error fetching speech style:", error)
+    }
+  }
+  
 
 document.addEventListener("DOMContentLoaded", loadFileList)
 
@@ -178,6 +233,9 @@ async function fetchCurrentWakeWord() {
     console.error("Error fetching wake word configuration:", error)
   }
 }
+
+
+
 
 function showStatus(message, type, elementId) {
   const status = document.getElementById(elementId)
@@ -244,6 +302,9 @@ function loadFileList() {
     .then((response) => response.json())
     .then((data) => {
       const fileList = document.getElementById("fileList")
+      if(!fileList){
+        return
+      }
       fileList.innerHTML = "" // clear existing list
       console.log(data)
 

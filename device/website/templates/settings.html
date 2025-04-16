@@ -66,6 +66,25 @@
             </form>
             <div id="currentWakeWord" class="current-config"></div>
         </section>
+
+        <section class="section">
+            <h2>Speech Style</h2>
+            <form id="speechStyleForm">
+                <div class="form-group">
+                    <label>Choose speech style:</label>
+                    <div>
+                        <input type="radio" id="formal" name="speechStyle" value="formal" checked>
+                        <label for="formal">Formal</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="informal" name="speechStyle" value="informal">
+                        <label for="informal">Informal</label>
+                    </div>
+                </div>
+                <button type="submit">Save Style</button>
+                <div id="speechStyleStatus" class="status"></div>
+            </form>
+        </section>
     </div>
 </body>
 

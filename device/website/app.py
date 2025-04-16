@@ -256,6 +256,36 @@ def get_wake_word():
         print(f"Error reading wake word config: {e}")
     return jsonify({"wake_word": "Hey Voice Vault"})
 
+@app.route("/save_speech_style", methods=["POST"])
+@requires_auth
+def save_speech_style():
+    data = request.get_json()
+    speech_style = data.get("speech_style")
+    print("got here")
+
+    if speech_style:
+        try:
+            config["default"]["speech_style"] = speech_style
+            with open(CONFIG_PATH, "w") as f:
+                    config.write(f)
+            return jsonify({"success": True})    
+        except Exception as e:
+            print(f"Error saving speech_style config: {e}")
+            return jsonify({"success": False, "error": str(e)}), 500
+    return jsonify({"success": False, "error": "Missing speech_style input"}), 400
+
+
+@app.route("/get_speech_style")
+@requires_auth
+def get_speech_style():
+    try:
+        return jsonify({"speech_style": config["default"]["speech_style"]})
+    except Exception as e:
+        print(f"Error reading wake word config: {e}")
+    return jsonify({"speech_style": None})
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5001)
