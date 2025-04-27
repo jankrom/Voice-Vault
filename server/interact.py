@@ -1,5 +1,5 @@
 from ollama import chat, ChatResponse
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, stream_with_context, Response
 import os
 
 
@@ -20,9 +20,8 @@ with open('system-prompt.txt', 'r') as file:
     SYSTEM_PROMPT = file.read()
 
 # Endpoint to receive requests, format them, and send them to the server
-@app.route("/interact", methods=["GET"])
+@app.route("/interact", methods=["POST"])
 def interact():
-    # Extract the incoming request data
     incoming_data = request.get_json()
 
     password = incoming_data.get("password")
@@ -30,26 +29,36 @@ def interact():
         return jsonify({"error": "Invalid password"}), 401
 
     message = incoming_data.get("message", "")
-    response = predict(message)
-    print(response)
-    return jsonify(response)
+    return Response(stream_with_context(predict(message)), mimetype='text/plain')
 
 
 def predict(query):
-    response: ChatResponse = chat(
+    stream = chat(
         model=MODEL_TAG,
         messages=[
-            {
-                "role": "assistant",
-                "content": SYSTEM_PROMPT
-            },
-            {
-                "role": "user",
-                "content": query,
-            },
+            {"role": "assistant", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": query},
         ],
+        stream=True
     )
-    return response.message.content
+    
+    buffer = ""
+    type_detected = False
+    response_type = None
+    
+    for chunk in stream:
+        chunk_text =  chunk["message"]["content"]
+        buffer += chunk_text
+        
+        while not type_detected and '\n' in buffer:
+            line, buffer = buffer.split('\n', 1)
+            query_type = line.strip()
+            type_detected = True
+            yield f"{query_type}\n"
+        
+        if type_detected:
+                yield buffer
+                buffer = ""
 
 
 if __name__ == "__main__":
