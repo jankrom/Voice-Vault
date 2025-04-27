@@ -129,7 +129,7 @@ const DeviceConfiguration = () => {
                     4. Connect VM
                   </h3>
                   <p className="text-gray-300">
-                    Enter your VM's URL to connect it with your Voice Vault
+                    Enter your VM&apos;s URL to connect it with your Voice Vault
                     device. This enables the AI conversation features.
                   </p>
                 </div>
@@ -176,8 +176,8 @@ const DeviceConfiguration = () => {
                   />
                 </svg>
                 <p className="text-gray-300">
-                  Your VM should be accessible from your device's network for
-                  the AI features to work properly.
+                  Your VM should be accessible from your device&apos;s network
+                  for the AI features to work properly.
                 </p>
               </li>
               <li className="flex items-start gap-3">
@@ -195,7 +195,7 @@ const DeviceConfiguration = () => {
                   />
                 </svg>
                 <p className="text-gray-300">
-                  The wake word can be changed at any time through the device's
+                  The wake word can be changed at any time through the device&apos;s
                   web interface.
                 </p>
               </li>

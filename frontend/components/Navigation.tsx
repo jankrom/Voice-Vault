@@ -7,7 +7,6 @@ export default function Navigation() {
   useEffect(() => {
     const handleScroll = () => {
       const sections = ["home", "about", "setup", "models", "privacy"]
-      const scrollPosition = window.scrollY + 100 // Offset for better trigger point
 
       sections.forEach((section) => {
         const element = document.getElementById(section)

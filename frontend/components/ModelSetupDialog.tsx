@@ -15,11 +15,6 @@ const ModelSetupDialog = ({
   selectedModel: OpenSourceModel | null
   setSelectedModel: (model: OpenSourceModel | null) => void
 }) => {
-  const handleDownloadCompose = (e: React.MouseEvent) => {
-    e.preventDefault()
-    window.location.href = "/docker-compose.yml"
-  }
-
   return (
     <Dialog
       open={selectedModel !== null}
