@@ -54,16 +54,6 @@ const openSourceModels: OpenSourceModel[] = [
     ],
   },
   {
-    name: "Falcon 7B",
-    description: "TII's open-source 7B parameter language model",
-    setupInstructions: [
-      "1. Pull Docker image: docker pull jankrom1/voice-vault-flask:falcon-7b",
-      "2. Pull Docker image: docker pull jankrom1/voice-vault-ollama:falcon-7b",
-      "3. Download docker-compose.yml and upload it to VM",
-      "4. Run: MODEL_TAG_DOCKER=falcon-7b MODEL=falcon:7b PASSWORD=default-password docker compose up",
-    ],
-  },
-  {
     name: "LLaMA 3",
     description: "Meta's latest generation of open foundation language models",
     setupInstructions: [
